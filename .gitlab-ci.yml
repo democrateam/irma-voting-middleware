@@ -14,5 +14,7 @@ build:
     - npm run build
     - cp -r node_modules/@fortawesome/fontawesome-free/webfonts dist
   artifacts:
+    expire_in: 1 day
+    paths:
     - dist/
 
