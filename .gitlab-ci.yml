@@ -1,0 +1,18 @@
+stages:
+  - build
+
+cache:
+  paths:
+    - node_modules/
+
+build:
+  stage: build
+  image: node
+  script:
+    - npm install
+    - npm run css
+    - npm run build
+    - cp -r node_modules/@fortawesome/fontawesome-free/webfonts dist
+  artifacts:
+    - dist/
+
