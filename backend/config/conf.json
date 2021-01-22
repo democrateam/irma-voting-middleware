@@ -1,0 +1,10 @@
+{
+  "irma": {
+    "url": "http://localhost:8089",
+    "auth_token": "8OC9rOOdkVOLel5vO61"
+  },
+  "mode": "dev",
+  "url": "localhost",
+  "node_port": 3000,
+  "database_file": "./db/database.db"
+}
