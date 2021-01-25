@@ -60,9 +60,8 @@ app.use("/user", user);
 // Proxy IRMA app traffic to IRMA server
 app.use("/irma", proxy({ target: `${conf.irma.url}`, changeOrigin: true }));
 
-// Probably won't need this, since only the app needs access to the IRMA
-// server from outside
-//app.use("/session", proxy({ target: `${conf.irma.url}`, changeOrigin: true }));
+// Serve static public directory
+app.use(express.static('public'))
 
 // Start server
 const server = app.listen(conf.node_port, conf.url, () =>

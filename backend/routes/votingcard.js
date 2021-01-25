@@ -6,7 +6,7 @@ var router = express.Router();
 
 // Below are two routes that complete a disclosure session
 // to get the necessary attributes to decide eligibility.
-router.get("/start", (req, res) => {
+router.get("/disclose/start", (req, res) => {
   // send disclosure request to conf.irma.server
   fetch(`${conf.irma.url}/session`, {
     method: "POST",
@@ -29,15 +29,17 @@ router.get("/start", (req, res) => {
   })
     .then((res) => res.json())
     .then((json) => {
-      console.log(json);
       req.session.disclosure_token = json.token;
       req.session.authenticated = false;
-      res.status(200).send(json.sessionPtr);
+      res.status(200).json(json.sessionPtr);
     })
-    .catch((err) => res.status(405).send(`error: ${err}$`));
+    .catch((err) => {
+      console.log(err);
+      res.status(405).send(`error: ${err}$`);
+    });
 });
 
-router.get("/finish", (req, res) => {
+router.get("/disclose/finish", (req, res) => {
   let db = req.db;
   // TODO: check database if disclosed identity is allowed to vote
 
@@ -48,28 +50,29 @@ router.get("/finish", (req, res) => {
   fetch(`${conf.irma.url}/session/${req.session.disclosure_token}/result`)
     .then((resp) => resp.json())
     .then((json) => {
-      console.log(json);
-      if (json.proofState !== "DONE_VALID") throw new Error("not valid");
+      if (!(json.proofStatus === "VALID" && json.status === "DONE"))
+        throw new Error("not valid");
 
-      // TODO: cleanup: throw credTypeID's in some constants array/configuration
-      // Could throw key errors etc.
-      initials = json.disclosed.filter(
-        (item) => item.id === "irma-demo.gemeente.personalData.initials"
-      )[0].rawvalue;
-      familyname = json.disclosed.filter(
-        (item) => item.id === "irma-demo.gemeente.personalData.familyname"
-      )[0].rawvalue;
-      dateofbirth = json.disclosed.filter(
-        (item) => item.id === "irma-demo.gemeente.personalData.dateofbirth"
-      )[0].rawvalue;
+      let getValue = (json, id) =>
+        json.disclosed[0].filter(
+          (attr) => attr.id == id && attr.status == "PRESENT"
+        )[0].rawvalue;
+
+      let ids = [
+        "irma-demo.gemeente.personalData.initials",
+        "irma-demo.gemeente.personalData.familyname",
+        "irma-demo.gemeente.personalData.dateofbirth",
+      ];
+
+      let [initials, name, dateofbirth] = ids.map((id) => getValue(json, id));
 
       // TODO: perform db check
+      console.log(initials, name, dateofbirth);
 
       // Let's say the user is allowed a voting card
       req.session.authenticated = true;
 
-      // TODO: does this set the session as authenticated?
-      res.status(200).end("disclosure competed");
+      res.status(200).end();
     })
     .catch((err) => {
       console.log(err);
@@ -77,8 +80,7 @@ router.get("/finish", (req, res) => {
 });
 
 // Below are two routes for issuance of a voting card
-router.get("/issue_start", (req, res) => {
-  // TODO: check cookie for authentication
+router.get("/issue/start", (req, res) => {
   if (!req.session.authenticated) res.status(403).end("not permitted");
 
   fetch(`${conf.irma.url}/session`, {
@@ -111,7 +113,7 @@ router.get("/issue_start", (req, res) => {
     .catch((err) => res.status(405).send(`error: ${err}$`));
 });
 
-router.get("/issue_finish", (req, res) => {
+router.get("/issue/finish", (req, res) => {
   // Check if the session is completed successfully. If so,
   // register that this user has retrieved her voting card.
 });
