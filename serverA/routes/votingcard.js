@@ -115,6 +115,9 @@ router.get("/issue/start", (req, res) => {
 router.get("/issue/finish", (req, res) => {
   // Check if the session is completed successfully. If so,
   // register that this user has retrieved her voting card.
+  // Update database accordingly.
+
+  res.status(200).end();
 });
 
 module.exports = router;

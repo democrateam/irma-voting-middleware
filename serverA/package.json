@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "serverA",
   "version": "0.0.1",
   "description": "server A",
   "main": "server.js",
