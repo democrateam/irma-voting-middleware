@@ -34,6 +34,12 @@
     irmaWeb
       .start()
       .then((result) => {
+        // wait two seconds to display check mark
+        return new Promise((resolve) =>
+          setTimeout(() => resolve(result), 2000)
+        );
+      })
+      .then((result) => {
         if (result !== 200) throw new Error("disclosure failed");
         console.log("disclosure completed");
         options.session.url = options.session.url.replace("disclose", "issue");

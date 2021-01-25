@@ -106,7 +106,6 @@ router.get("/issue/start", (req, res) => {
   })
     .then((res) => res.json())
     .then((json) => {
-      console.log(json);
       req.session.issue_token = json.token;
       res.status(200).send(json.sessionPtr);
     })
