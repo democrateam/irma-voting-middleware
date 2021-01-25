@@ -35,4 +35,5 @@ The server exposes endpoints:
   - etc.
 - `/user`:
   - `/disclose/{start,finish}`: perform a disclosure session. After completion, the user has a cookie.
-  - `/issue/{start,finish`: perform an issuance session to retrieve a voting card, uses the disclosure result in cookie mentioned above as condition.
+  - `/issue/{start,finish}`: perform an issuance session to retrieve a voting card, uses the disclosure result in cookie mentioned above as condition.
+- `/irma`: This traffic is proxied to a *local* IRMA server configured in `config/conf.json`.
