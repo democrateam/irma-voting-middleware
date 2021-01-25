@@ -1,0 +1,18 @@
+{
+  "production": false,
+  "url": "http://localhost:3001/irma",
+  "port": 8090,
+  "DisableTLS": true,
+  "email": "l.botros@cs.ru.nl",
+  "disclose_perms": [],
+  "sign_perms": [],
+  "issue_perms": [],
+  "no_auth": false,
+  "requestors": {
+    "serverB": {
+      "auth_method": "token",
+      "key": "0DLA0eaemnU20XW3YH4",
+      "sign_perms": ["irma-demo.stemmen.stempas.votingnumber"]
+    }
+  }
+}
