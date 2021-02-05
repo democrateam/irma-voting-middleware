@@ -64,8 +64,8 @@ app.use("/irma", proxy({ target: `${conf.irma.url}`, changeOrigin: true }));
 app.use(express.static('public'))
 
 // Start server
-const server = app.listen(conf.node_port, conf.url, () =>
-  console.log(`Listening at ${conf.url}:${conf.node_port}.`)
+const server = app.listen(conf.port, conf.listen, () =>
+  console.log(`Listening at ${conf.listen}:${conf.port}, publically available at ${conf.url}.`)
 );
 
 // Gracefully shutdown the server

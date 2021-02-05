@@ -24,9 +24,8 @@
 					<div class="col-md-8 ps-0">
 						<div class="card-body position-relative h-100">
 							<h2>Wat wordt de naam van het nieuwe universiteitsgebouw?</h2>
-							<p class="card-text">Om te kunnen stemmen wordt eerst met IRMA uw identiteit vastgesteld. Dit voorkomt dubbel stemmen. U kunt daarna een anonieme niet-traceerbare stemkaart in uw IRMA app laden. Daarna kunt u op een andere website deze stemkaart inzetten om te stemmen. Doordat het stemmen op een andere website gebeurt, kunt u niet getraceerd worden en weet niemand wie de stem uitbrengt. Houd daarvoor wel uw stemkaart prive.</p>
-							<p>Heeft u al IRMA, scan dan de QR code rechts om verder te gaan.</p>
-							<a href="#" class="btn btn-outline-dark">installeer IRMA</a>
+							<p class="card-text">Uw identiteit is vastgesteld. U mag stemmen. Um te kunnen stemmen kunt u nu een anonieme niet-traceerbare stemkaart in uw IRMA app laden. Daarna kunt u op een andere website deze stemkaart inzetten om te stemmen. Doordat het stemmen op een andere website gebeurt, kunt u niet getraceerd worden en weet niemand wie de stem uitbrengt. Houd daarvoor wel uw stemkaart prive.</p>
+							<p>Scan dan de QR code rechts om verder te gaan.</p>
 							<a href="#" class="btn btn-outline-dark float-end">lees meer</a>
 						</div>
 					</div>
@@ -45,7 +44,7 @@
 				<div class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 			</div>
 			<button type="button" class="position-absolute top-0 start-0 translate-middle-y btn btn-sm btn-primary rounded-pill">Identificeren</button>
-			<button type="button" class="position-absolute top-0 start-50 translate-middle btn btn-sm btn-secondary rounded-pill">Stemkaart ophalen</button>
+			<button type="button" class="position-absolute top-0 start-50 translate-middle btn btn-sm btn-primary rounded-pill">Stemkaart ophalen</button>
 			<button type="button" class="position-absolute top-0 end-0 translate-middle-y btn btn-sm btn-secondary rounded-pill">Stem uitbrengen</button>
 		</div>
 </div>
@@ -88,7 +87,7 @@
       debugging: true,
       element: "#irma-web-form",
       session: {
-        url: "/user/disclose",
+        url: "/user/issue",
         start: {
           url: (o) => `${o.url}/start`,
           method: "GET",
@@ -113,9 +112,9 @@
         );
       })
       .then((result) => {
-        if (result !== 200) throw new Error("disclosure failed");
-        console.log("disclosure completed");
-				window.location.href = "issue.html";
+        if (result !== 200) throw new Error("issuance failed");
+        console.log("issuance completed");
+				window.location.href = "https://bitpowder.com:4445/";
       })
       .catch((error) => console.error("error: ", error));
   </script>

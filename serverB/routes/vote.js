@@ -4,12 +4,12 @@ const conf = require("./../config/conf.json");
 
 var router = express.Router();
 
-router.get("/start", (req, res) => {
+router.post("/start", (req, res) => {
   fetch(`${conf.irma.url}/session`, {
     method: "POST",
     body: JSON.stringify({
       "@context": "https://irma.app/ld/request/signature/v2",
-      message: "message to be signed",
+			message: req.body.text,
       disclose: conf.attributes,
     }),
     headers: {
@@ -21,6 +21,11 @@ router.get("/start", (req, res) => {
     .then((json) => {
       req.session.token = json.token;
       req.session.voted = false;
+			if (conf.url) {
+				json.sessionPtr.u = `https://${conf.url}/irma/${json.sessionPtr.u}`;
+			} else {
+				json.sessionPtr.u = `${conf.irma.url}/irma/${json.sessionPtr.u}`;
+			}
       res.status(200).json(json.sessionPtr);
     })
     .catch((err) => {

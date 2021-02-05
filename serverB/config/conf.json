@@ -4,8 +4,9 @@
     "auth_token": "0DLA0eaemnU20XW3YH4"
   },
   "mode": "dev",
-  "url": "localhost",
-  "node_port": 3001,
+  "url_disabled": "bitpowder.com:4445",
+  "listen": "0.0.0.0",
+	"port": 4445,
   "database_file": "./db/database.db",
   "attributes": [[["irma-demo.stemmen.stempas.votingnumber"]]]
 }

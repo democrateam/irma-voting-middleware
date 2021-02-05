@@ -49,6 +49,10 @@ app.use(
   })
 );
 
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 // Use all routes from /routes
 // TODO: could do this programmatically for all routes
 const vote = require("./routes/vote");
@@ -61,8 +65,8 @@ app.use("/irma", proxy({ target: `${conf.irma.url}`, changeOrigin: true }));
 app.use(express.static('public'))
 
 // Start server
-const server = app.listen(conf.node_port, conf.url, () =>
-  console.log(`Listening at ${conf.url}:${conf.node_port}.`)
+const server = app.listen(conf.port, conf.listen, () =>
+  console.log(`Listening at ${conf.listen}:${conf.port}, publically available at ${conf.url}.`)
 );
 
 // Gracefully shutdown the server
