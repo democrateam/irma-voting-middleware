@@ -6,6 +6,9 @@ const { createProxyMiddleware: proxy } = require("http-proxy-middleware");
 const conf = require("./config/conf.json");
 const app = express();
 
+// Proxy IRMA app traffic to IRMA server
+app.use("/irma", proxy({ target: `${conf.irma.url}`, changeOrigin: true }));
+
 let db = new sqlite3.Database(conf.database_file, (err) => {
   if (err) {
     console.log(`Couldn't connect to database ${err.message}`);
@@ -56,9 +59,6 @@ app.use("/admin", admin);
 
 const user = require("./routes/votingcard");
 app.use("/user", user);
-
-// Proxy IRMA app traffic to IRMA server
-app.use("/irma", proxy({ target: `${conf.irma.url}`, changeOrigin: true }));
 
 // Serve static public directory
 app.use(express.static('public'))

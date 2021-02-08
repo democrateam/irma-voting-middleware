@@ -6,6 +6,9 @@ const { createProxyMiddleware: proxy } = require("http-proxy-middleware");
 const conf = require("./config/conf.json");
 const app = express();
 
+// Proxy IRMA app traffic to IRMA server
+app.use("/irma", proxy({ target: `${conf.irma.url}`, changeOrigin: true }));
+
 let db = new sqlite3.Database(conf.database_file, (err) => {
   if (err) {
     console.log(`Couldn't connect to database ${err.message}`);
@@ -50,16 +53,13 @@ app.use(
 );
 
 const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use("/vote", bodyParser.urlencoded({ extended: false }));
+app.use("/vote", bodyParser.json());
 
 // Use all routes from /routes
 // TODO: could do this programmatically for all routes
 const vote = require("./routes/vote");
 app.use("/vote", vote);
-
-// Proxy IRMA app traffic to IRMA server
-app.use("/irma", proxy({ target: `${conf.irma.url}`, changeOrigin: true }));
 
 // Serve static public directory
 app.use(express.static('public'))
