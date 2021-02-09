@@ -1,26 +1,19 @@
 {
-  "name": "webpack-demo",
+  "name": "irma-vote",
   "version": "1.0.0",
-  "description": "",
-  "private": true,
+  "description": "irma-vote",
+  "repository": "git@gitlab.science.ru.nl:ilab/irma-vote.git",
+  "author": "Leon <l.botros@cs.ru.nl>",
+  "license": "MIT",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
-    "sass": "sass",
-    "css": "npm run sass src/style.scss dist/style.css"
+    "build_frontend": "cd frontend && yarn install && yarn run build",
+    "start_serverA_irma": "cd backend/serverA && yarn run start_irma_server",
+    "start_serverB_irma": "cd backend/serverB && yarn run start_irma_server",
+    "start_serverA": "cd backend/serverA && yarn install && yarn run start",
+    "start_serverB": "cd backend/serverB && yarn install && yarn run start",
+    "all": "npm-run-all build_frontend start_serverA_irma start_serverB_irma start_serverA start_serverB"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.1",
-    "sass": "^1.29.0",
-    "webpack": "^5.6.0",
-    "webpack-cli": "^4.2.0"
-  },
-  "dependencies": {
-    "bootstrap": "5.0.0-beta1",
-    "@popperjs/core": "^2.6.0",
-    "simplemde": "^1.11.2"
+    "npm-run-all": "^4.1.5"
   }
 }
