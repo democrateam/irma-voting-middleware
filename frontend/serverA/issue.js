@@ -1,14 +1,14 @@
-const irma = require("@privacybydesign/irma-frontend");
-const style = require("./../assets/style.scss");
+const irma = require('@privacybydesign/irma-frontend')
+const style = require('./../assets/style.scss')
 
 let options = {
   debugging: true,
-  element: "#irma-web-form",
+  element: '#irma-web-form',
   session: {
-    url: "/user/issue",
+    url: '/user/issue',
     start: {
       url: (o) => `${o.url}/start`,
-      method: "GET",
+      method: 'GET',
     },
     mapping: {
       sessionPtr: (r) => r,
@@ -18,18 +18,18 @@ let options = {
       parseResponse: (r) => r.status,
     },
   },
-};
+}
 
-const irmaWeb = irma.newWeb(options);
+const irmaWeb = irma.newWeb(options)
 irmaWeb
   .start()
   .then((result) => {
     // wait two seconds to display check mark
-    return new Promise((resolve) => setTimeout(() => resolve(result), 2000));
+    return new Promise((resolve) => setTimeout(() => resolve(result), 2000))
   })
   .then((result) => {
-    if (result !== 200) throw new Error("issuance failed");
-    console.log("issuance completed");
-    window.location.href = "http://localhost:4445/";
+    if (result !== 200) throw new Error('issuance failed')
+    console.log('issuance completed')
+    window.location.href = 'http://localhost:4445/'
   })
-  .catch((error) => console.error("error: ", error));
+  .catch((error) => console.error('error: ', error))

@@ -2,9 +2,10 @@
 
 This package contains a NodeJS server acting as server A for irma-vote.
 Server A's main tasks are:
-1. Authenticate a user (using IRMA), 
+
+1. Authenticate a user (using IRMA),
 2. Decide eligibility using data from step 1 and preconfigured data or (external) database integration,
-3. Issue a voting card if eligible. 
+3. Issue a voting card if eligible.
 
 ## Installing and running
 
@@ -36,4 +37,4 @@ The server exposes endpoints:
 - `/user`:
   - `/disclose/{start,finish}`: perform a disclosure session. After completion, the user has a cookie.
   - `/issue/{start,finish}`: perform an issuance session to retrieve a voting card, uses the disclosure result in cookie mentioned above as condition.
-- `/irma`: This traffic is proxied to a *local* IRMA server configured in `config/conf.json`.
+- `/irma`: This traffic is proxied to a _local_ IRMA server configured in `config/conf.json`.
