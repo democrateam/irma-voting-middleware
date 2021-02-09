@@ -1,6 +1,10 @@
-const fetch = require("node-fetch");
 const express = require("express");
 const conf = require("./../config/conf.json");
+const IrmaBackend = require("@privacybydesign/irma-backend");
+
+const irmaBackend = new IrmaBackend(conf.irma.url, {
+  serverToken: conf.irma.auth_token,
+});
 
 var router = express.Router();
 
@@ -8,9 +12,9 @@ var router = express.Router();
 // to get the necessary attributes to decide eligibility.
 router.get("/disclose/start", (req, res) => {
   // send disclosure request to conf.irma.server
-  fetch(`${conf.irma.url}/session`, {
-    method: "POST",
-    body: JSON.stringify({
+
+  irmaBackend
+    .startSession({
       "@context": "https://irma.app/ld/request/disclosure/v2",
       disclose: [
         [
@@ -21,26 +25,15 @@ router.get("/disclose/start", (req, res) => {
           ],
         ],
       ],
-    }),
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: conf.irma.auth_token,
-    },
-  })
-    .then((res) => res.json())
-    .then((json) => {
-      req.session.disclosure_token = json.token;
+    })
+    .then(({ sessionPtr, token }) => {
+      req.session.disclosure_token = token;
       req.session.authenticated = false;
-			if (conf.url) {
-				json.sessionPtr.u = `https://${conf.url}/irma/${json.sessionPtr.u}`;
-			} else {
-				json.sessionPtr.u = `${conf.irma.url}/irma/${json.sessionPtr.u}`;
-			}
-      res.status(200).json(json.sessionPtr);
+      return res.status(200).json(sessionPtr);
     })
     .catch((err) => {
       console.log(err);
-      res.status(405).send(`error: ${err}$`);
+      return res.status(405).send(`error: ${err}$`);
     });
 });
 
@@ -52,14 +45,14 @@ router.get("/disclose/finish", (req, res) => {
   if (req.session.disclosure_token == undefined)
     return res.status(403).send("no disclosure started yet for this session");
 
-  fetch(`${conf.irma.url}/session/${req.session.disclosure_token}/result`)
-    .then((resp) => resp.json())
-    .then((json) => {
-      if (!(json.proofStatus === "VALID" && json.status === "DONE"))
-        throw new Error("not valid");
+  return irmaBackend
+    .getSessionResult(req.session.disclosure_token)
+    .then((result) => {
+      if (!(result.proofStatus === "VALID" && result.status === "DONE"))
+        throw new Error("not valid or session not finished yet");
 
-      let getValue = (json, id) =>
-        json.disclosed[0].filter(
+      let getValue = (result, id) =>
+        result.disclosed[0].filter(
           (attr) => attr.id == id && attr.status == "PRESENT"
         )[0].rawvalue;
 
@@ -69,7 +62,7 @@ router.get("/disclose/finish", (req, res) => {
         "irma-demo.gemeente.personalData.dateofbirth",
       ];
 
-      let [initials, name, dateofbirth] = ids.map((id) => getValue(json, id));
+      let [initials, name, dateofbirth] = ids.map((id) => getValue(result, id));
 
       // TODO: perform db check
       console.log(initials, name, dateofbirth);
@@ -77,20 +70,17 @@ router.get("/disclose/finish", (req, res) => {
       // Let's say the user is allowed a voting card
       req.session.authenticated = true;
 
-      res.status(200).end();
+      return res.status(200).end();
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    .catch((err) => res.status(405).send(`error: ${err}$`));
 });
 
 // Below are two routes for issuance of a voting card
 router.get("/issue/start", (req, res) => {
-  if (!req.session.authenticated) res.status(403).end("not permitted");
+  if (!req.session.authenticated) return res.status(403).end("not permitted");
 
-  fetch(`${conf.irma.url}/session`, {
-    method: "POST",
-    body: JSON.stringify({
+  return irmaBackend
+    .startSession({
       "@context": "https://irma.app/ld/request/issuance/v2",
       credentials: [
         {
@@ -103,21 +93,10 @@ router.get("/issue/start", (req, res) => {
           },
         },
       ],
-    }),
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: conf.irma.auth_token,
-    },
-  })
-    .then((res) => res.json())
-    .then((json) => {
-      req.session.issue_token = json.token;
-			if (conf.url) {
-				json.sessionPtr.u = `https://${conf.url}/irma/${json.sessionPtr.u}`;
-			} else {
-				json.sessionPtr.u = `${conf.irma.url}/irma/${json.sessionPtr.u}`;
-			}
-      res.status(200).send(json.sessionPtr);
+    })
+    .then(({ sessionPtr, token }) => {
+      req.session.issue_token = token;
+      return res.status(200).send(sessionPtr);
     })
     .catch((err) => res.status(405).send(`error: ${err}$`));
 });
@@ -127,7 +106,7 @@ router.get("/issue/finish", (req, res) => {
   // register that this user has retrieved her voting card.
   // Update database accordingly.
 
-  res.status(200).end();
+  return res.status(200).end();
 });
 
 module.exports = router;

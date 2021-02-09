@@ -10,6 +10,7 @@
   "author": "Leon Botros (l.botros@cs.ru.nl)",
   "license": "ISC",
   "dependencies": {
+    "@privacybydesign/irma-backend": "^0.1.4",
     "cookie-session": "^1.4.0",
     "express": "^4.17.1",
     "http-proxy-middleware": "^1.0.6",

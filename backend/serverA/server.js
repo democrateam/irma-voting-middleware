@@ -6,9 +6,6 @@ const { createProxyMiddleware: proxy } = require("http-proxy-middleware");
 const conf = require("./config/conf.json");
 const app = express();
 
-// Proxy IRMA app traffic to IRMA server
-app.use("/irma", proxy({ target: `${conf.irma.url}`, changeOrigin: true }));
-
 let db = new sqlite3.Database(conf.database_file, (err) => {
   if (err) {
     console.log(`Couldn't connect to database ${err.message}`);
@@ -36,6 +33,13 @@ let db = new sqlite3.Database(conf.database_file, (err) => {
   });
 });
 
+// First define the proxies,
+// then define the middlewares,
+// then define the routes.
+
+// Proxy IRMA app traffic to IRMA server
+app.use("/irma", proxy({ target: `${conf.irma.url}`, changeOrigin: true }));
+
 // Make the database globally accesible
 app.use(function (req, _, next) {
   req.db = db;
@@ -61,11 +65,14 @@ const user = require("./routes/votingcard");
 app.use("/user", user);
 
 // Serve static public directory
-app.use(express.static('public'))
+app.use(express.static("public"));
+
 
 // Start server
 const server = app.listen(conf.port, conf.listen, () =>
-  console.log(`Listening at ${conf.listen}:${conf.port}, publically available at ${conf.url}.`)
+  console.log(
+    `Listening at ${conf.listen}:${conf.port}, publically available at ${conf.url}.`
+  )
 );
 
 // Gracefully shutdown the server

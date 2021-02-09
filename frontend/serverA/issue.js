@@ -30,6 +30,6 @@ irmaWeb
   .then((result) => {
     if (result !== 200) throw new Error("issuance failed");
     console.log("issuance completed");
-    window.location.href = "https://bitpowder.com:4445/";
+    window.location.href = "http://localhost:4445/";
   })
   .catch((error) => console.error("error: ", error));
