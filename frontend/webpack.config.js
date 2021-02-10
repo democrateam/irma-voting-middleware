@@ -14,14 +14,7 @@ var config = {
     rules: [
       {
         test: /\.s[ac]ss$/i,
-        use: [
-          // Creates `style` nodes from JS strings
-          'style-loader',
-          // Translates CSS into CommonJS
-          'css-loader',
-          // Compiles Sass to CSS
-          'sass-loader',
-        ],
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
         test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
@@ -40,7 +33,7 @@ var config = {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
         generator: {
-          filename: 'assets/images/[name].[ext]',
+          filename: 'assets/images/[name][ext]',
         },
       },
       {
@@ -53,7 +46,7 @@ var config = {
 
 var serverAConfig = Object.assign({}, config, {
   name: 'serverA',
-  entry: { main: './serverA/index.js', issue: './serverA/issue.js' },
+  entry: './serverA/index.js',
   output: {
     path: outputA,
     filename: '[name].js',
@@ -64,11 +57,6 @@ var serverAConfig = Object.assign({}, config, {
       filename: 'index.html',
       template: './serverA/index.html',
       chunks: ['main'],
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'issue.html',
-      template: './serverA/issue.html',
-      chunks: ['issue'],
     }),
   ],
 })

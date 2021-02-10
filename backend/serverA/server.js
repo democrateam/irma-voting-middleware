@@ -1,13 +1,16 @@
 const express = require('express')
-const sqlite3 = require('sqlite3')
 const cookieSession = require('cookie-session')
 const { createProxyMiddleware: proxy } = require('http-proxy-middleware')
+const bodyParser = require('body-parser')
 
-// Load the configuration
+const admin = require('./routes/admin')
+const votingcard = require('./routes/votingcard')
+const election = require('./routes/election')
+
 const conf = require('./config/conf.json')
+const db = require('./db/database')
 
 const app = express()
-const db = require("./database");
 
 // First define the proxies,
 // then define the middlewares,
@@ -32,13 +35,14 @@ app.use(
   })
 )
 
-// Use all routes from /routes
-// TODO: could do this programmatically for all routes
-const admin = require('./routes/admin')
-app.use('/admin', admin)
 
-const user = require('./routes/votingcard')
-app.use('/user', user)
+// API routes
+app.use('/api', bodyParser.json())
+app.use('/api', bodyParser.urlencoded({ extended: false }))
+
+app.use('/api/v1/admin', admin)
+app.use('/api/v1/votingcard', votingcard)
+app.use('/api/v1/election', election)
 
 // Serve static public directory
 app.use(express.static('public'))
@@ -60,6 +64,7 @@ function close() {
   db.close((err) => {
     if (err) {
       console.log(`Couldn't close database: ${err.message}$`)
+      return
     }
     console.log('Database connection closed.')
   })

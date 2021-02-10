@@ -1,7 +1,7 @@
 const express = require('express')
 const sqlite3 = require('sqlite3')
 
-const conf = require('./config/conf.json')
+const conf = require('./../config/conf.json')
 
 // Connect to the database and initialize it
 let db = new sqlite3.Database(conf.database_file, (err) => {
@@ -15,7 +15,6 @@ let db = new sqlite3.Database(conf.database_file, (err) => {
     // Create the elections table
     // Stores id, readable name, question, options, (start/end) date, nr of participants, creation date.
 
-    console.log('creating table')
     db.run(
       `CREATE TABLE IF NOT EXISTS elections (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,7 +33,6 @@ let db = new sqlite3.Database(conf.database_file, (err) => {
     )
 
     // Insert a sample election
-    console.log('inserting sample election')
     db.run(
       `INSERT INTO elections (name, question, options, start, end, participants) VALUES (
         "radboudgebouw",

@@ -3,10 +3,16 @@ var router = express.Router()
 
 // middleware that is specific to this router
 // TODO: use for admin authentication
-router.use(function timeLog(req, res, next) {
-  console.log('Time: ', Date.now())
+router.use((req, res, next) => {
+  // check the url, /login is permitted
+  // check if the req has a cookie
   next()
 })
+
+// only admin route that does not require authentication
+router.get('/login', (req, res) => {})
+
+router.get('/logout', (req, res) => {})
 
 // overview of all elections?
 router.get('/', (req, res) => {
@@ -24,9 +30,20 @@ router.get('/', (req, res) => {
 })
 
 // new: create a new election
-// TODO: include election details in POST data
 router.post('/new', function (req, res) {
-  res.send('make a new election')
+  let db = req.db
+  let sql = `INSERT INTO elections (name, question, options, start, end, participants) VALUES (?, ?, ?, ?, ?, ?);`
+  let data = req.body
+
+  console.log(req.body)
+  // TODO: validate data!!!
+  let params = [data.name, data.question, data.options, data.start, data.end, 0]
+  db.run(sql, params, (err) => {
+    if (err) {
+      return res.status(403).json({ err: err })
+    }
+    return res.status(200)
+  })
 })
 
 module.exports = router
