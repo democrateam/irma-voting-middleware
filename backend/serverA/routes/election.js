@@ -13,7 +13,7 @@ router.get('/:name', (req, res) => {
       console.log(`Couldn't get election with name ${name}: ${err}`)
       return res.status(400).json({ error: err.message })
     }
-    return res.status(200).json(row);
+    return res.status(200).json(row)
   })
 })
 

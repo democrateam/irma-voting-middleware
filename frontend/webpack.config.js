@@ -46,7 +46,7 @@ var config = {
 
 var serverAConfig = Object.assign({}, config, {
   name: 'serverA',
-  entry: './serverA/index.js',
+  entry: { main: './serverA/index.js', admin: './serverA/admin' },
   output: {
     path: outputA,
     filename: '[name].js',
@@ -57,6 +57,11 @@ var serverAConfig = Object.assign({}, config, {
       filename: 'index.html',
       template: './serverA/index.html',
       chunks: ['main'],
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'admin.html',
+      template: './serverA/admin.html',
+      chunks: ['admin'],
     }),
   ],
 })

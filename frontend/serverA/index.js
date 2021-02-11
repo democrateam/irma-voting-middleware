@@ -80,7 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
           console.log('issuance completed')
           window.location.href = 'http://localhost:4445/'
         })
-        .catch((error) => console.error('error: ', error))
     })
     .catch((error) => console.error('error: ', error))
 })

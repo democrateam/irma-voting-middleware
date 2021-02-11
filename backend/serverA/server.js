@@ -35,7 +35,6 @@ app.use(
   })
 )
 
-
 // API routes
 app.use('/api', bodyParser.json())
 app.use('/api', bodyParser.urlencoded({ extended: false }))
