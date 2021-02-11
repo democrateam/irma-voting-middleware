@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
   fetch(url)
     .then((res) => res.json())
     .then((json) => {
-      document.querySelector('#election-question').innerHTML = json.question
-      document.querySelector('#election-date').innerHTML = new Date(
+      document.querySelector('#election-question').innerText = json.question
+      document.querySelector('#election-date').innerText = new Date(
         json.start
       ).toLocaleDateString('nl-NL', {
         weekday: 'long',
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         month: 'long',
         day: 'numeric',
       })
-      document.querySelector('#election-step').innerHTML = step1
+      document.querySelector('#election-step').innerText = step1
     })
     .catch((err) => {
       console.log('unable to get data:', err)
@@ -57,8 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
     .then((result) => {
       if (result !== 200) throw new Error('disclosure failed')
       console.log('disclosure completed')
-      document.querySelector('#election-step').innerHTML = step2
-      document.querySelector('#irma-help-text').innerHTML =
+      document.querySelector('#election-step').innerText = step2
+      document.querySelector('#irma-help-text').innerText =
         'Scan dan de QR code rechts om verder te gaan.'
       document.querySelector('#irma-help-btn').remove()
       document.querySelector('#irma-readmore-btn').remove()
