@@ -5,77 +5,117 @@
     <title>Stemmen met IRMA</title>
   </head>
   <body>
-<header class="navbar sticky-lg-top shadow-sm navbar-expand-lg navbar-dark mb-3 shadow-sm">
-<nav class="container">
-	<a class="navbar-brand" href="#"><img src="./../assets/images/irma-logo.svg" height="25"> Stemmen met IRMA</a>
-</nav>
-</header>
+    <header class="navbar sticky-lg-top shadow-sm navbar-expand-lg navbar-dark mb-3 shadow-sm">
+      <nav class="container">
+        <a class="navbar-brand" href="#">
+          <img src="./../assets/images/irma-logo.svg" height="25" />
+          Stemmen met IRMA
+        </a>
+      </nav>
+    </header>
 
-<div class="container mt-3">
-	<div class="row">
-		<div class="col-8">
-			<div class="card overflow-hidden mb-3 pb-0 h-100">
-				<div class="card-header">Stemmen is mogelijk tot <strong id="election-date"></strong>.</div>
-				<div class="row h-100">
-					<img src="https://www.ru.nl/publish/pages/802240/364px/uvb-erasmusgebouw.jpg" class="col-md-4 h-100 pr-0" style="object-fit: cover" />
-					<div class="col-md-8 ps-0">
-						<div class="card-body position-relative h-100">
-							<h2 id="election-question"></h2>
-							<p class="card-text" id="election-step"></p>
-							<p id="irma-help-text">Heeft u al IRMA, scan dan de QR code rechts om verder te gaan.</p>
-							<a id="irma-help-btn" href="#" class="btn btn-outline-dark">installeer IRMA</a>
-							<a id="irma-readmore-btn" href="#" class="btn btn-outline-dark float-end">lees meer</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-4">
-			<div id="irma-web-form" class="w-100" style="max-width: 100%"></div>
-		</div>
-	</div>
-</div>
+    <div class="container mt-3">
+      <div class="row">
+        <div class="col-8">
+          <div class="card overflow-hidden mb-3 pb-0 h-100">
+            <div class="card-header">
+              Stemmen is mogelijk tot
+              <strong id="election-date"></strong>
+              .
+            </div>
+            <div class="row h-100">
+              <img
+                src="https://www.ru.nl/publish/pages/802240/364px/uvb-erasmusgebouw.jpg"
+                class="col-md-4 h-100 pr-0"
+                style="object-fit: cover"
+              />
+              <div class="col-md-8 ps-0">
+                <div class="card-body position-relative h-100">
+                  <h2 id="election-question"></h2>
+                  <p class="card-text" id="election-step"></p>
+                  <p id="irma-help-text">Heeft u al IRMA, scan dan de QR code rechts om verder te gaan.</p>
+                  <a id="irma-help-btn" href="#" class="btn btn-outline-dark">installeer IRMA</a>
+                  <a id="irma-readmore-btn" href="#" class="btn btn-outline-dark float-end">lees meer</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div id="irma-web-form" class="w-100" style="max-width: 100%"></div>
+        </div>
+      </div>
+    </div>
 
-<div class="container mt-5">
-		<div class="position-relative my-4 col-lg-6 mx-auto">
-			<div class="progress" style="height: 0.1rem;">
-				<div class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-			</div>
-			<button id="election-step1" type="button" class="position-absolute top-0 start-0 translate-middle-y btn btn-sm btn-primary rounded-pill">Identificeren</button>
-			<button id="election-step2" type="button" class="position-absolute top-0 start-50 translate-middle btn btn-sm btn-secondary rounded-pill">Stemkaart ophalen</button>
-			<button id="election-step3" type="button" class="position-absolute top-0 end-0 translate-middle-y btn btn-sm btn-secondary rounded-pill">Stem uitbrengen</button>
-		</div>
-</div>
+    <div class="container mt-5">
+      <div class="position-relative my-4 col-lg-6 mx-auto">
+        <div class="progress" style="height: 0.1rem">
+          <div
+            class="progress-bar"
+            role="progressbar"
+            style="width: 50%"
+            aria-valuenow="25"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          ></div>
+        </div>
+        <button
+          id="election-step1"
+          type="button"
+          class="position-absolute top-0 start-0 translate-middle-y btn btn-sm btn-primary rounded-pill"
+        >
+          Identificeren
+        </button>
+        <button
+          id="election-step2"
+          type="button"
+          class="position-absolute top-0 start-50 translate-middle btn btn-sm btn-secondary rounded-pill"
+        >
+          Stemkaart ophalen
+        </button>
+        <button
+          id="election-step3"
+          type="button"
+          class="position-absolute top-0 end-0 translate-middle-y btn btn-sm btn-secondary rounded-pill"
+        >
+          Stem uitbrengen
+        </button>
+      </div>
+    </div>
 
-
-<footer class="footer mt-5 py-3 border-top">
-  <div class="container">
-		<div class="row">
-			<div class="col-sm-6">
-				<h6>iLab: experiments @ iHub</h6>
-			</div>
-			<div class="col-sm-6">
-				<h6>iHub: interdisciplinary Hub for Security, Privacy, and Data Governance</h6>
-			</div>
-		</div>
-		<div class="row mt-3">
-			<div class="col-sm-6">
-				<h6>Location</h6>
-				<address>
-					19th floor of the Erasmus-building<br>
-					Radboud University
-				</address>
-			</div>
-			<div class="col-sm-6">
-				<h6>Postal</h6>
-				<address>
-					iHub, Radboud University<br>
-					Erasmusplein 1<br>
-					6525 HT Nijmegen<br>
-					The Netherlands
-				</address>
-			</div>
-		</div>
-  </div>
-</footer>
+    <footer class="footer mt-5 py-3 border-top">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-6">
+            <h6>iLab: experiments @ iHub</h6>
+          </div>
+          <div class="col-sm-6">
+            <h6>iHub: interdisciplinary Hub for Security, Privacy, and Data Governance</h6>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-sm-6">
+            <h6>Location</h6>
+            <address>
+              19th floor of the Erasmus-building
+              <br />
+              Radboud University
+            </address>
+          </div>
+          <div class="col-sm-6">
+            <h6>Postal</h6>
+            <address>
+              iHub, Radboud University
+              <br />
+              Erasmusplein 1
+              <br />
+              6525 HT Nijmegen
+              <br />
+              The Netherlands
+            </address>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
 </html>
