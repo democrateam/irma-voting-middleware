@@ -34,7 +34,7 @@ $(document).ready(function () {
     },
     error: (res) => {
       $('#alert_placeholder').html(
-        `<div class="alert alert-warning" role="alert">Verkiezing aanmaken mislukt: ${res.responseText}</div>`
+        `<div class="alert alert-warning" role="alert">Verkiezing aanmaken mislukt: ${res.responseJSON.err}</div>`
       )
     },
   })
