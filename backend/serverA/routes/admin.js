@@ -1,18 +1,51 @@
 var express = require('express')
 var router = express.Router()
+const IrmaBackend = require('@privacybydesign/irma-backend')
+
+const conf = require('../config/conf.json')
+
+const irmaBackend = new IrmaBackend(conf.irma.url, {
+  serverToken: conf.irma.auth_token,
+})
 
 // middleware that is specific to this router
-// TODO: use for admin authentication
+// maybe: move to PROJECT_ROOT/middleware?
 router.use((req, res, next) => {
-  // check the url, /login is permitted
-  // check if the req has a cookie
-  next()
+  if (req.session.admin_auth || req.url.endsWith('/login/start')) return next()
+  res.status(403).json({ err: 'no cookie' })
 })
 
 // only admin route that does not require authentication
-router.get('/login', (req, res) => {})
+router.get('/login/start', (req, res) => {
+  irmaBackend
+    .startSession({
+      '@context': 'https://irma.app/ld/request/disclosure/v2',
+      disclose: [[['pbdf.sidn-pbdf.email.email']]],
+    })
+    .then(({ sessionPtr, token }) => {
+      req.session.admin_auth = false
+      req.session.admin_token = token
+      return res.status(200).json(sessionPtr)
+    })
+    .catch((err) => res.status(403).json({ err: err }))
+})
 
-router.get('/logout', (req, res) => {})
+router.get('/login/finish', (req, res) => {
+  irmaBackend
+    .getSessionResult(req.session.admin_token)
+    .then((result) => {
+      if (!(result.proofStatus === 'VALID' && result.status === 'DONE'))
+        throw new Error('not valid or session not finished yet')
+
+      let mail = result.diclosed[0][0].rawvalue
+      if (!(mail in conf.admin)) throw new Error('not an admin')
+
+      res.status(204).end()
+    })
+    .catch((err) => res.status(403).json({ err: err }))
+})
+
+router.get('/logout', (req, res) => res.clearCookie('session'))
 
 // overview of all elections?
 router.get('/', (req, res) => {
