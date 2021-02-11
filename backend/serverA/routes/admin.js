@@ -17,16 +17,6 @@ router.get('/logout', (req, res) => {})
 // overview of all elections?
 router.get('/', (req, res) => {
   let db = req.db
-  db.serialize(() => {
-    db.run('UPDATE count_table SET counter = counter + 1 WHERE id=0;')
-    db.get('SELECT counter FROM count_table WHERE id=0;', (err, row) => {
-      if (err) {
-        console.log(`Error getting counter from table: ${err.message}$`)
-        return res.status(405).send(`error: ${error}`)
-      }
-      res.status(200).send(`counter: ${row.counter}`)
-    })
-  })
 })
 
 // new: create a new election
@@ -35,14 +25,25 @@ router.post('/new', function (req, res) {
   let sql = `INSERT INTO elections (name, question, options, start, end, participants) VALUES (?, ?, ?, ?, ?, ?);`
   let data = req.body
 
+  // dd-mm-yyyy -> yyyy-mm-dd
+  let convert_date = (dateStr) => dateStr.split('-').reverse().join('-')
+
   console.log(req.body)
   // TODO: validate data!!!
-  let params = [data.name, data.question, data.options, data.start, data.end, 0]
+  let params = [
+    data['election-name'],
+    data['election-description'],
+    data['election-options'],
+    convert_date(data['election-start']),
+    convert_date(data['election-end']),
+    0,
+  ]
+  console.log(params)
   db.run(sql, params, (err) => {
     if (err) {
-      return res.status(403).json({ err: err })
+      return res.status(403).json({ err: err.message })
     }
-    return res.status(200)
+    return res.status(200).json({ msg: 'success' })
   })
 })
 

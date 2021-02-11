@@ -1,6 +1,7 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const webpack = require('webpack')
 
 // Specified to public path of backend
 outputA = path.resolve(process.cwd(), '../backend/serverA/public')
@@ -42,6 +43,13 @@ var config = {
       },
     ],
   },
+  plugins: [
+    new CleanWebpackPlugin(),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+    }),
+  ],
 }
 
 var serverAConfig = Object.assign({}, config, {
@@ -51,8 +59,7 @@ var serverAConfig = Object.assign({}, config, {
     path: outputA,
     filename: '[name].js',
   },
-  plugins: [
-    new CleanWebpackPlugin(),
+  plugins: config.plugins.concat([
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: './serverA/index.html',
@@ -63,7 +70,7 @@ var serverAConfig = Object.assign({}, config, {
       template: './serverA/admin.html',
       chunks: ['admin'],
     }),
-  ],
+  ]),
 })
 
 var serverBConfig = Object.assign({}, config, {
@@ -73,10 +80,9 @@ var serverBConfig = Object.assign({}, config, {
     path: outputB,
     filename: '[name].js',
   },
-  plugins: [
-    new CleanWebpackPlugin(),
+  plugins: config.plugins.concat([
     new HtmlWebpackPlugin({ template: './serverB/index.html' }),
-  ],
+  ]),
 })
 
 module.exports = [serverAConfig, serverBConfig]

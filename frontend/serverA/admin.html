@@ -10,7 +10,7 @@
         <a class="navbar-brand" href="#"><img src="./../assets/images/irma-logo.svg" height="25" /> Stemmen met IRMA</a>
       </nav>
     </header>
-
+    <div id="alert_placeholder"></div>
     <div class="container mt-3">
       <div class="card overflow-hidden mb-3 pb-0 h-100">
         <div class="card-header">Een nieuwe verkiezing aanmaken</div>
@@ -22,7 +22,7 @@
           />
           <div class="col-md-8 ps-0">
             <div class="card-body position-relative h-100">
-              <form>
+              <form id="new">
                 <div class="form-group row mb-3">
                   <label class="col-3 col-form-label" for="election-name">Naam</label>
                   <div class="col-9">
@@ -44,8 +44,8 @@
                   <label for="textarea" class="col-3 col-form-label">Beschrijving</label>
                   <div class="col-9">
                     <textarea
-                      id="textarea"
-                      name="textarea"
+                      id="election-description"
+                      name="election-description"
                       cols="40"
                       rows="5"
                       class="form-control"
@@ -57,14 +57,26 @@
                   <label for="text" class="col-3 col-form-label">Opties</label>
                   <div class="col-9">
                     <input
-                      id="text"
-                      name="text"
+                      id="election-options"
+                      name="election-options"
                       placeholder="option 1,option 2,option 3"
                       type="text"
                       class="form-control"
                       aria-describedby="textHelpBlock"
                     />
                     <span id="textHelpBlock" class="form-text text-muted">Gescheiden met komma's.</span>
+                  </div>
+                </div>
+                <div class="form-group row mb-3">
+                  <label for="text" class="col-3 col-form-label">Start datum</label>
+                  <div class="col-9">
+                    <input id="election-start" name="election-start" type="text" />
+                  </div>
+                </div>
+                <div class="form-group row mb-3">
+                  <label for="text" class="col-3 col-form-label">Start datum</label>
+                  <div class="col-9">
+                    <input id="election-end" name="election-end" type="text" />
                   </div>
                 </div>
                 <div class="form-group row mb-3">
