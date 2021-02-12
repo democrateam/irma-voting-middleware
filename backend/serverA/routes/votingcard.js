@@ -79,7 +79,8 @@ router.get('/disclose/finish', (req, res) => {
 
 // Below are two routes for issuance of a voting card
 router.get('/issue/start', (req, res) => {
-  if (!req.session.authenticated) return res.status(403).end('not permitted')
+  if (!req.session.authenticated)
+    return res.status(403).json({ err: 'not permitted' })
 
   return irmaBackend
     .startSession({
