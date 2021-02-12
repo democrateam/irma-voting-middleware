@@ -1,6 +1,6 @@
 {
   "production": false,
-  "url": "http://localhost:4444/irma",
+  "url": "",
   "port": 8089,
   "DisableTLS": true,
   "email": "l.botros@cs.ru.nl",
