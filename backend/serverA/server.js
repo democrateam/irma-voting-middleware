@@ -3,6 +3,8 @@ const cookieSession = require('cookie-session')
 const { createProxyMiddleware: proxy } = require('http-proxy-middleware')
 const bodyParser = require('body-parser')
 
+const sessionPtrMiddleware = require('./middlewares/sessionpointer')
+
 const admin = require('./routes/admin')
 const votingcard = require('./routes/votingcard')
 const election = require('./routes/election')
@@ -34,6 +36,8 @@ app.use(
     keys: ['key1', 'key2'],
   })
 )
+
+app.use('/api', sessionPtrMiddleware)
 
 // API routes
 app.use('/api', bodyParser.json())

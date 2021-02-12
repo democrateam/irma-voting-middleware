@@ -56,7 +56,9 @@ router.get('/', (req, res) => {
 // new: create a new election
 router.post('/new', function (req, res) {
   let db = req.db
-  let sql = `INSERT INTO elections (name, question, options, start, end, participants) VALUES (?, ?, ?, ?, ?, ?);`
+  let stmt = db.prepare(
+    `INSERT INTO elections (name, question, options, start, end, participants) VALUES (?, ?, ?, ?, ?, ?);`
+  )
   let data = req.body
 
   // dd-mm-yyyy -> yyyy-mm-dd
@@ -73,12 +75,14 @@ router.post('/new', function (req, res) {
     0,
   ]
   console.log(params)
-  db.run(sql, params, (err) => {
+  try {
+    stmt.run(params)
+  } catch (err) {
     if (err) {
       return res.status(403).json({ err: err.message })
     }
-    return res.status(200).json({ msg: 'success' })
-  })
+  }
+  return res.status(200).json({ msg: 'success' })
 })
 
 module.exports = router

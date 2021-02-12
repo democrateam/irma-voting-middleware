@@ -29,16 +29,11 @@ router.get('/disclose/start', (req, res) => {
     .then(({ sessionPtr, token }) => {
       req.session.disclosure_token = token
       req.session.authenticated = false
-			if (conf.url) {
-				sessionPtr.u = `https://${conf.url}/irma/${sessionPtr.u}`;
-			} else {
-				sessionPtr.u = `${conf.irma.url}/irma/${sessionPtr.u}`;
-			}
-      return res.status(200).json(sessionPtr)
+      res.status(200).json(sessionPtr).end()
     })
     .catch((err) => {
       console.log(err)
-      return res.status(405).json({ error: err.message })
+      res.status(405).json({ error: err.message }).end()
     })
 })
 
@@ -103,12 +98,7 @@ router.get('/issue/start', (req, res) => {
     })
     .then(({ sessionPtr, token }) => {
       req.session.issue_token = token
-			if (conf.url) {
-				sessionPtr.u = `https://${conf.url}/irma/${sessionPtr.u}`;
-			} else {
-				sessionPtr.u = `${conf.irma.url}/irma/${sessionPtr.u}`;
-			}
-      return res.status(200).send(sessionPtr)
+      res.status(200).send(sessionPtr)
     })
     .catch((err) => res.status(405).json({ err: err.message }))
 })
@@ -118,7 +108,7 @@ router.get('/issue/finish', (req, res) => {
   // register that this user has retrieved her voting card.
   // Update database accordingly.
 
-  return res.status(204)
+  return res.status(200).json({ msg: 'success' })
 })
 
 module.exports = router
