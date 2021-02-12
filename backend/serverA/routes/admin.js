@@ -11,7 +11,7 @@ router.use(function timeLog(req, res, next) {
 // overview of all elections?
 router.get('/', (req, res) => {
   let db = req.db
-  db.serialize(() => {
+  db.transaction(() => {
     db.run('UPDATE count_table SET counter = counter + 1 WHERE id=0;')
     db.get('SELECT counter FROM count_table WHERE id=0;', (err, row) => {
       if (err) {

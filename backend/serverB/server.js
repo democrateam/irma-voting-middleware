@@ -1,5 +1,5 @@
 const express = require('express')
-const sqlite3 = require('sqlite3')
+const sqlite3 = require('better-sqlite3')
 const cookieSession = require('cookie-session')
 const { createProxyMiddleware: proxy } = require('http-proxy-middleware')
 
@@ -9,7 +9,8 @@ const app = express()
 // Proxy IRMA app traffic to IRMA server
 app.use('/irma', proxy({ target: `${conf.irma.url}`, changeOrigin: true }))
 
-let db = new sqlite3.Database(conf.database_file, (err) => {
+let db = new sqlite3(conf.database_file);
+db.transaction((err) => {
   if (err) {
     console.log(`Couldn't connect to database ${err.message}`)
     throw err

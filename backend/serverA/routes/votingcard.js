@@ -29,6 +29,11 @@ router.get('/disclose/start', (req, res) => {
     .then(({ sessionPtr, token }) => {
       req.session.disclosure_token = token
       req.session.authenticated = false
+			if (conf.url) {
+				sessionPtr.u = `https://${conf.url}/irma/${sessionPtr.u}`;
+			} else {
+				sessionPtr.u = `${conf.irma.url}/irma/${sessionPtr.u}`;
+			}
       return res.status(200).json(sessionPtr)
     })
     .catch((err) => {
@@ -96,6 +101,11 @@ router.get('/issue/start', (req, res) => {
     })
     .then(({ sessionPtr, token }) => {
       req.session.issue_token = token
+			if (conf.url) {
+				sessionPtr.u = `https://${conf.url}/irma/${sessionPtr.u}`;
+			} else {
+				sessionPtr.u = `${conf.irma.url}/irma/${sessionPtr.u}`;
+			}
       return res.status(200).send(sessionPtr)
     })
     .catch((err) => res.status(405).send(`error: ${err}$`))
