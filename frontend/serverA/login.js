@@ -21,6 +21,6 @@ let options = {
 }
 
 var irmaWeb = irma.newWeb(options)
-irmaWeb.start().then((result) => {
-  if (result === 200) window.location.replace = 'admin.html'
+irmaWeb.start().then((status) => {
+  if (status === 200) window.location.href = 'admin.html'
 })

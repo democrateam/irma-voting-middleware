@@ -33,7 +33,7 @@ router.get('/disclose/start', (req, res) => {
     })
     .catch((err) => {
       console.log(err)
-      return res.status(405).send(`error: ${err}$`)
+      return res.status(405).json({ error: err.message })
     })
 })
 
@@ -43,7 +43,9 @@ router.get('/disclose/finish', (req, res) => {
 
   // Use token from /start to retrieve session results from conf.irma.server
   if (req.session.disclosure_token == undefined)
-    return res.status(403).send('no disclosure started yet for this session')
+    return res
+      .status(403)
+      .json({ err: 'no disclosure started yet for this session' })
 
   return irmaBackend
     .getSessionResult(req.session.disclosure_token)
@@ -72,7 +74,7 @@ router.get('/disclose/finish', (req, res) => {
 
       return res.status(200).end()
     })
-    .catch((err) => res.status(405).send(`error: ${err}$`))
+    .catch((err) => res.status(405).json({ err: err.message }))
 })
 
 // Below are two routes for issuance of a voting card
@@ -98,7 +100,7 @@ router.get('/issue/start', (req, res) => {
       req.session.issue_token = token
       return res.status(200).send(sessionPtr)
     })
-    .catch((err) => res.status(405).send(`error: ${err}$`))
+    .catch((err) => res.status(405).json({ err: err.message }))
 })
 
 router.get('/issue/finish', (req, res) => {
@@ -106,7 +108,7 @@ router.get('/issue/finish', (req, res) => {
   // register that this user has retrieved her voting card.
   // Update database accordingly.
 
-  return res.status(200).end()
+  return res.status(204)
 })
 
 module.exports = router

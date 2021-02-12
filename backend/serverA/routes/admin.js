@@ -11,7 +11,7 @@ const irmaBackend = new IrmaBackend(conf.irma.url, {
 // middleware that is specific to this router
 // maybe: move to PROJECT_ROOT/middleware?
 router.use((req, res, next) => {
-  if (req.session.admin_auth || req.url.endsWith('/login/start')) return next()
+  if (req.session.admin_auth || req.url.includes('/login/')) return next()
   res.status(403).json({ err: 'no cookie' })
 })
 
@@ -37,10 +37,11 @@ router.get('/login/finish', (req, res) => {
       if (!(result.proofStatus === 'VALID' && result.status === 'DONE'))
         throw new Error('not valid or session not finished yet')
 
-      let mail = result.diclosed[0][0].rawvalue
-      if (!(mail in conf.admin)) throw new Error('not an admin')
+      let mail = result.disclosed[0][0].rawvalue
+      if (!conf.admins.includes(mail)) throw new Error('not an admin')
 
-      res.status(204).end()
+      req.session.admin_auth = true
+      res.status(200).json({ msg: 'success' })
     })
     .catch((err) => res.status(403).json({ err: err }))
 })

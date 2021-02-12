@@ -22,17 +22,17 @@ router.post('/start', async (req, res) => {
     })
     .catch((err) => {
       console.log(err)
-      return res.status(405).send(`error: ${err}$`)
+      return res.status(405).json({ err: err.message })
     })
 })
 
 router.get('/finish', (req, res) => {
-  if (req.session.voted) return res.status(403).send('already voted')
+  if (req.session.voted) return res.status(403).json({ err: 'already voted' })
 
   return irmaBackend.getSessionResult(req.session.token).then((result) => {
     console.log(result)
     if (result.status !== 'DONE' || result.proofStatus !== 'VALID')
-      return res.status(403).end()
+      return res.status(403).json({ err: 'session not done/valid' })
 
     let signature = result.signature
     //TODO: Store signature + attributes + message in database
