@@ -58,17 +58,13 @@ const server = app.listen(conf.port, conf.listen, () =>
 )
 
 // Gracefully shutdown the server
-process.on('SIGTERM', close)
-process.on('SIGINT', close)
+process.on('exit', () => close)
+process.on('SIGHUP', () => process.exit(128 + 1))
+process.on('SIGINT', () => process.exit(128 + 2))
+process.on('SIGTERM', () => process.exit(128 + 15))
 
 function close() {
   console.log('Shutting down server...')
   server.close()
-  db.close((err) => {
-    if (err) {
-      console.log(`Couldn't close database: ${err.message}$`)
-      return
-    }
-    console.log('Database connection closed.')
-  })
+  db.close()
 }

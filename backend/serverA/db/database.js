@@ -52,12 +52,14 @@ db.transaction(() => {
 
   // Create the voting card table
   try {
-    db.prepare(`
+    db.prepare(
+      `
     CREATE TABLE IF NOT EXISTS votingcards (
       id INTEGER,
       identity TEXT NOT NULL,
       FOREIGN KEY(id) REFERENCES elections(id)
-    )`).run()
+    )`
+    ).run()
   } catch (err) {
     console.log(err)
     throw err
