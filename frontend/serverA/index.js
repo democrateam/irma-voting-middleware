@@ -8,7 +8,6 @@ let options = {
   debugging: true,
   element: '#irma-web-form',
   session: {
-    url: '/api/v1/votingcard/disclose',
     start: {
       url: (o) => `${o.url}/start`,
       method: 'GET',
@@ -86,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .then((res) => res.json())
     .then((json) => {
+      options.session.url = `/api/v1/votingcard/${json.id}/disclose`
       document.querySelector('#election-question').innerText = json.question
       document.querySelector('#election-date').innerText = new Date(
         json.start

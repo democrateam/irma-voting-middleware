@@ -10,8 +10,12 @@ var router = express.Router()
 
 // Below are two routes that complete a disclosure session
 // to get the necessary attributes to decide eligibility.
-router.get('/disclose/start', (req, res) => {
-  // send disclosure request to conf.irma.server
+router.get('/:id/disclose/start', (req, res) => {
+  // Stores user session data per election, create if doesnt exist
+  req.session.electionData = req.session.electionData || {}
+
+  console.log(req.session.electionData)
+  let data = (req.session.electionData[req.params.id] = {})
 
   irmaBackend
     .startSession({
@@ -27,8 +31,8 @@ router.get('/disclose/start', (req, res) => {
       ],
     })
     .then(({ sessionPtr, token }) => {
-      req.session.disclosure_token = token
-      req.session.authenticated = false
+      data.discloseToken = token
+      data.authenticated = false
       res.status(200).json(sessionPtr).end()
     })
     .catch((err) => {
@@ -37,18 +41,17 @@ router.get('/disclose/start', (req, res) => {
     })
 })
 
-router.get('/disclose/finish', (req, res) => {
-  let db = req.db
-  // TODO: check database if disclosed identity is allowed to vote
+router.get('/:id/disclose/finish', (req, res) => {
+  let data = req.session.electionData[req.params.id]
 
-  // Use token from /start to retrieve session results from conf.irma.server
-  if (req.session.disclosure_token == undefined)
+  // Use token from /start to retrieve session results from IRMA server
+  if (!data.discloseToken)
     return res
       .status(403)
       .json({ err: 'no disclosure started yet for this session' })
 
   return irmaBackend
-    .getSessionResult(req.session.disclosure_token)
+    .getSessionResult(data.discloseToken)
     .then((result) => {
       if (!(result.proofStatus === 'VALID' && result.status === 'DONE'))
         throw new Error('not valid or session not finished yet')
@@ -64,13 +67,16 @@ router.get('/disclose/finish', (req, res) => {
         'irma-demo.gemeente.personalData.dateofbirth',
       ]
 
-      let [initials, name, dateofbirth] = ids.map((id) => getValue(result, id))
+      data.disclosed = {}
+      ids.forEach((attributeId) => {
+        data.disclosed[attributeId] = getValue(result, attributeId)
+      })
 
-      // TODO: perform db check
-      console.log(initials, name, dateofbirth)
+      console.log(data)
+      // TODO: check database if disclosed identity is allowed to vote
 
       // Let's say the user is allowed a voting card
-      req.session.authenticated = true
+      data.authenticated = true
 
       return res.status(200).end()
     })
@@ -78,38 +84,86 @@ router.get('/disclose/finish', (req, res) => {
 })
 
 // Below are two routes for issuance of a voting card
-router.get('/issue/start', (req, res) => {
-  if (!req.session.authenticated)
-    return res.status(403).json({ err: 'not permitted' })
+router.get('/:id/issue/start', (req, res) => {
+  let data = req.session.electionData[req.params.id]
+  let identity = JSON.stringify(data.disclosed)
 
-  return irmaBackend
-    .startSession({
-      '@context': 'https://irma.app/ld/request/issuance/v2',
-      credentials: [
-        {
-          credential: 'irma-demo.stemmen.stempas',
-          attributes: {
-            election: 'test',
-            voteURL: 'test.com',
-            start: 'somedate',
-            end: 'someotherdate',
+  if (!data.authenticated) return res.status(403).json({ err: 'not permitted' })
+
+  try {
+    let count = req.db
+      .prepare(`SELECT COUNT(*) FROM votingcards WHERE id = ? AND identity = ?`)
+      .get(req.params.id, identity)
+    if (count) throw new Error('already got a voting card')
+    console.log(exists)
+
+    let row = req.db
+      .prepare('SELECT name, start, end FROM elections WHERE id = ?')
+      .get(req.params.id)
+
+    console.log(row)
+
+    irmaBackend
+      .startSession({
+        '@context': 'https://irma.app/ld/request/issuance/v2',
+        credentials: [
+          {
+            credential: 'irma-demo.stemmen.stempas',
+            attributes: {
+              election: row.name,
+              voteURL: 'test.com', // TODO: how to get this?
+              start: row.start,
+              end: row.end,
+            },
           },
-        },
-      ],
-    })
-    .then(({ sessionPtr, token }) => {
-      req.session.issue_token = token
-      res.status(200).send(sessionPtr)
-    })
-    .catch((err) => res.status(405).json({ err: err.message }))
+        ],
+      })
+      .then(({ sessionPtr, token }) => {
+        data.issueToken = token
+        res.status(200).json(sessionPtr).end()
+      })
+      .catch((err) => {
+        throw err
+      })
+  } catch (err) {
+    res.status(405).json({ err: err.message }).end()
+  }
 })
 
-router.get('/issue/finish', (req, res) => {
+router.get('/:id/issue/finish', (req, res) => {
   // Check if the session is completed successfully. If so,
   // register that this user has retrieved her voting card.
   // Update database accordingly.
+  let data = req.session.electionData[req.params.id]
 
-  return res.status(200).json({ msg: 'success' })
+  try {
+    irmaBackend
+      .getSessionStatus(data.issueToken)
+      .then((result) => {
+        console.log(result)
+        req.db.transaction(() => {
+          req.db
+            .prepare(`INSERT INTO votingcards (id, identity) VALUES (?, ?);`)
+            .run([req.params.id, JSON.stringify(data.disclosed)])
+
+          console.log(
+            `id: ${req.params.id}, identity: ${JSON.stringify(data.disclosed)}`
+          )
+
+          req.db
+            .prepare(
+              `UPDATE elections SET participants = participants + 1 WHERE id = ?`
+            )
+            .run(req.params.id)
+        })()
+        res.status(200).json({ msg: 'success' }).end()
+      })
+      .catch((err) => {
+        throw err
+      })
+  } catch (err) {
+    res.status(400).json({ err: err.message }).end()
+  }
 })
 
 module.exports = router
