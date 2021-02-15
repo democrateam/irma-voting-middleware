@@ -13,6 +13,7 @@ const irmaBackend = new IrmaBackend(conf.irma.url, {
 router.use((req, res, next) => {
   if (req.session.admin_auth || req.url.includes('/login/')) return next()
   res.status(403).json({ err: 'no cookie' })
+  next()
 })
 
 // only admin route that does not require authentication
@@ -48,9 +49,13 @@ router.get('/login/finish', (req, res) => {
 
 router.get('/logout', (req, res) => res.clearCookie('session'))
 
-// overview of all elections?
-router.get('/', (req, res) => {
-  let db = req.db
+router.get('/elections', (req, res) => {
+  try {
+    let rows = req.db.prepare('SELECT * FROM elections').all()
+    res.status(200).json(rows)
+  } catch (err) {
+    res.status(500).json({ err: err.message })
+  }
 })
 
 // new: create a new election
