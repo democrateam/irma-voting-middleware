@@ -90,4 +90,19 @@ router.post('/new', function (req, res) {
   return res.status(200).json({ msg: 'success' })
 })
 
+router.delete('/:id/delete', (req, res) => {
+  try {
+    req.db.transaction(() => {
+      req.db.prepare('DELETE FROM elections WHERE id = ?').run(req.params.id)
+      req.db.prepare('DELETE FROM votingcards WHERE id = ?').run(req.params.id)
+    })()
+    res.status(204).end()
+  } catch (err) {
+    if (err) {
+      console.log(err)
+      res.status(400).json({ err: err.message })
+    }
+  }
+})
+
 module.exports = router

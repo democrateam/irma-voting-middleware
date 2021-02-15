@@ -1,6 +1,29 @@
 require('./../assets/style.scss')
 require('bootstrap-datepicker')
+require('bootstrap-table')
 require('jquery-form')
+
+function delete_row(id) {
+  fetch(`/api/v1/admin/${id}/delete`, { method: 'DELETE' }).then((res) => {
+    if (res.status === 204) getTable()
+  })
+}
+
+function getTable() {
+  fetch('/api/v1/admin/elections')
+    .then((resp) => resp.json())
+    .then((json) => {
+      $('#overview').bootstrapTable({ data: json })
+      $('#overview thead tr').append('<td><strong>Actions</strong></td>')
+      Object.keys(json).forEach((tableRow) => {
+        $(`[data-index="${tableRow}"]`)
+          .append(
+            `<td><button type='button' style ='font-size:17px' class='btn btn-outline-danger border-0' ><i class='far fa-trash-alt'></i></button></td>`
+          )
+          .on('click', () => delete_row(json[tableRow].id))
+      })
+    })
+}
 
 $(document).ready(function () {
   $('#election-start')
@@ -38,4 +61,6 @@ $(document).ready(function () {
       )
     },
   })
+
+  getTable()
 })
