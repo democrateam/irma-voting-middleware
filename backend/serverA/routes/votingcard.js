@@ -111,7 +111,7 @@ router.get('/:id/issue/start', (req, res) => {
             credential: 'irma-demo.stemmen.stempas',
             attributes: {
               election: row.name,
-              voteURL: 'test.com', // TODO: how to get this?
+              voteURL: `${conf.serverB.url}/${row.name}`,
               start: row.start,
               end: row.end,
             },

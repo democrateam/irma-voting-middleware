@@ -3,26 +3,10 @@ require('bootstrap-datepicker')
 require('bootstrap-table')
 require('jquery-form')
 
-function delete_row(id) {
+function deleteElection(id) {
   fetch(`/api/v1/admin/${id}/delete`, { method: 'DELETE' }).then((res) => {
-    if (res.status === 204) getTable()
+    if (res.status === 204) $('#overview').bootstrapTable('refresh')
   })
-}
-
-function getTable() {
-  fetch('/api/v1/admin/elections')
-    .then((resp) => resp.json())
-    .then((json) => {
-      $('#overview').bootstrapTable({ data: json })
-      $('#overview thead tr').append('<td><strong>Actions</strong></td>')
-      Object.keys(json).forEach((tableRow) => {
-        $(`[data-index="${tableRow}"]`)
-          .append(
-            `<td><button type='button' style ='font-size:17px' class='btn btn-outline-danger border-0' ><i class='far fa-trash-alt'></i></button></td>`
-          )
-          .on('click', () => delete_row(json[tableRow].id))
-      })
-    })
 }
 
 $(document).ready(function () {
@@ -54,6 +38,7 @@ $(document).ready(function () {
       $('#alert_placeholder').html(
         `<div class="alert alert-success" role="alert">Nieuwe verkiezing aangemaakt</div>`
       )
+      $('#overview').bootstrapTable('refresh')
     },
     error: (res) => {
       $('#alert_placeholder').html(
@@ -62,5 +47,28 @@ $(document).ready(function () {
     },
   })
 
-  getTable()
+  $('#overview').bootstrapTable({
+    columns: [
+      { field: 'id', title: 'Election ID' },
+      { field: 'name', title: 'Election Name' },
+      { field: 'start', title: 'Start' },
+      { field: 'end', title: 'End' },
+      { field: 'creation', title: 'Creation date' },
+      { field: 'participants', title: 'Participants' },
+      {
+        field: 'actions',
+        title: 'Actions',
+        formatter: (value, row, index) => {
+          return `<button id='${row.id}' type='button' style='font-size:17px' class='btn btn-outline-danger border-0' ><i class='far fa-trash-alt'></i></button>`
+        },
+      },
+    ],
+    onLoadSuccess: () => {
+      $('#overview :button')
+        .parent()
+        .on('click', () => {
+          deleteElection(window.event.target.id)
+        })
+    },
+  })
 })

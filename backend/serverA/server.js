@@ -37,9 +37,9 @@ app.use(
   })
 )
 
-app.use('/api', sessionPtrMiddleware)
-
 // API routes
+// Checks for any session pointers and corrects them
+app.use('/api', sessionPtrMiddleware)
 app.use('/api', bodyParser.json())
 app.use('/api', bodyParser.urlencoded({ extended: false }))
 
@@ -47,7 +47,7 @@ app.use('/api/v1/admin', admin)
 app.use('/api/v1/votingcard', votingcard)
 app.use('/api/v1/election', election)
 
-// Serve static public directory
+// Serve static public directory (frontend for now)
 app.use(express.static('public'))
 
 // Start server

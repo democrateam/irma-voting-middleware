@@ -13,7 +13,6 @@ const irmaBackend = new IrmaBackend(conf.irma.url, {
 router.use((req, res, next) => {
   if (req.session.admin_auth || req.url.includes('/login/')) return next()
   res.status(403).json({ err: 'no cookie' })
-  next()
 })
 
 // only admin route that does not require authentication
