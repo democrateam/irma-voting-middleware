@@ -29,8 +29,8 @@ router.get('/disclose/start', (req, res) => {
     .then(({ sessionPtr, token }) => {
       req.session.disclosure_token = token
       req.session.authenticated = false
-			if (conf.url) {
-				sessionPtr.u = `https://${conf.url}/irma/${sessionPtr.u}`;
+			if (conf.external_url) {
+				sessionPtr.u = `${conf.external_url}/irma/${sessionPtr.u}`;
 			} else {
 				sessionPtr.u = `${conf.irma.url}/irma/${sessionPtr.u}`;
 			}
@@ -101,8 +101,8 @@ router.get('/issue/start', (req, res) => {
     })
     .then(({ sessionPtr, token }) => {
       req.session.issue_token = token
-			if (conf.url) {
-				sessionPtr.u = `https://${conf.url}/irma/${sessionPtr.u}`;
+			if (conf.external_url) {
+				sessionPtr.u = `${conf.external_url}/irma/${sessionPtr.u}`;
 			} else {
 				sessionPtr.u = `${conf.irma.url}/irma/${sessionPtr.u}`;
 			}
@@ -118,5 +118,10 @@ router.get('/issue/finish', (req, res) => {
 
   return res.status(200).end()
 })
+
+router.get('/vote', (req, res) => {
+  return res.status(307).header("Location", conf.vote_url).end();
+})
+
 
 module.exports = router

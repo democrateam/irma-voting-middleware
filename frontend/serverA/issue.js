@@ -30,6 +30,6 @@ irmaWeb
   .then((result) => {
     if (result !== 200) throw new Error('issuance failed')
     console.log('issuance completed')
-    window.location.href = 'http://localhost:4445/'
+    window.location.href = '/user/vote';
   })
   .catch((error) => console.error('error: ', error))

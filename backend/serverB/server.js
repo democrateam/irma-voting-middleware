@@ -2,8 +2,24 @@ const express = require('express')
 const sqlite3 = require('better-sqlite3')
 const cookieSession = require('cookie-session')
 const { createProxyMiddleware: proxy } = require('http-proxy-middleware')
+const { networkInterfaces } = require('os');
 
-const conf = require('./config/conf.json')
+var conf = require('./config/conf.json')
+
+if (!("external_url" in conf)) {
+	console.log("no 'external_url' set in config, resolving external ip address (assuming HTTP in dev mode)");
+	const nets = networkInterfaces();
+	for (const name of Object.keys(nets)) {
+			for (const net of nets[name]) {
+					// Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
+					if (net.family === 'IPv4' && !net.internal) {
+						conf.external_url = "http://" + net.address + ":" + conf.port;
+						break;
+					}
+			}
+	}
+}
+
 const app = express()
 
 // Proxy IRMA app traffic to IRMA server
@@ -68,7 +84,7 @@ app.use(express.static('public'))
 // Start server
 const server = app.listen(conf.port, conf.listen, () =>
   console.log(
-    `Listening at ${conf.listen}:${conf.port}, publically available at ${conf.url}.`
+    `Listening at ${conf.listen}:${conf.port}, publically available at ${conf.external_url}.`
   )
 )
 

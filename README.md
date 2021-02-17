@@ -16,12 +16,16 @@ Webpack is used as Javascript combinator, SASS (npm version) is used as CSS comp
 # Trust
 
 - [ ] IRMA keyshare server
-- [ ] 
 
 # Build & run
 
+Install `irmago`: see https://github.com/privacybydesign/irmago.
+
+Assumes IRMA app is in [developer mode](https://irma.app/docs/irma-app/) (so HTTP connections are allowed), and the phone with IRMA app and computer running theses servers are on the same WiFi network.
+
+Yarn commands (on Debian it might be `yarnpkg`):
 ```
-yarn run build_frontend
+yarn run build_frontend --watch
 yarn run start_serverA
 yarn run start_serverA_irma
 yarn run start_serverB

@@ -18,8 +18,8 @@ router.post('/start', async (req, res) => {
     .then(({ sessionPtr, token }) => {
       req.session.token = token
       req.session.voted = false
-			if (conf.url) {
-				sessionPtr.u = `https://${conf.url}/irma/${sessionPtr.u}`;
+			if (conf.external_url) {
+				sessionPtr.u = `${conf.external_url}/irma/${sessionPtr.u}`;
 			} else {
 				sessionPtr.u = `${conf.irma.url}/irma/${sessionPtr.u}`;
 			}
