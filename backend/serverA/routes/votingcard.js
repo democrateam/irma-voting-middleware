@@ -33,7 +33,12 @@ router.get('/:id/disclose/start', (req, res) => {
     .then(({ sessionPtr, token }) => {
       data.discloseToken = token
       data.authenticated = false
-      res.status(200).json(sessionPtr).end()
+			if (conf.external_url) {
+				sessionPtr.u = `${conf.external_url}/irma/${sessionPtr.u}`;
+			} else {
+				sessionPtr.u = `${conf.irma.url}/irma/${sessionPtr.u}`;
+			}
+      return res.status(200).json(sessionPtr)
     })
     .catch((err) => {
       console.log(err)
@@ -116,17 +121,20 @@ router.get('/:id/issue/start', (req, res) => {
               end: row.end,
             },
           },
-        ],
-      })
-      .then(({ sessionPtr, token }) => {
-        data.issueToken = token
-        res.status(200).json(sessionPtr).end()
-      })
-      .catch((err) => {
-        throw err
-      })
+      ],
+    })
+    .then(({ sessionPtr, token }) => {
+			data.issueToken = token
+			if (conf.external_url) {
+				sessionPtr.u = `${conf.external_url}/irma/${sessionPtr.u}`;
+			} else {
+				sessionPtr.u = `${conf.irma.url}/irma/${sessionPtr.u}`;
+			}
+      return res.status(200).send(sessionPtr)
+    })
+    .catch((err) => res.status(405).send(`error: ${err}$`))
   } catch (err) {
-    res.status(405).json({ err: err.message }).end()
+    res.status(400).json({ err: err.message }).end()
   }
 })
 
@@ -165,5 +173,10 @@ router.get('/:id/issue/finish', (req, res) => {
     res.status(400).json({ err: err.message }).end()
   }
 })
+
+router.get('/vote', (req, res) => {
+  return res.status(307).header("Location", conf.vote_url).end();
+})
+
 
 module.exports = router

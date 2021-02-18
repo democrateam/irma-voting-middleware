@@ -4,13 +4,12 @@
     "auth_token": "8OC9rOOdkVOLel5vO61"
   },
   "mode": "dev",
-  "url_disabled": "bitpowder.com:4444",
-  "serverB": {
-    "url": "http://localhost:4445"
-  },
+  "external_url_disabled": "https://election-register.sustainablesoftware.info",
   "listen": "0.0.0.0",
   "port": 4444,
   "database_file": "./db/database.db",
+  "vote_url_disabled": "https://election-vote.sustainablesoftware.info",
+	"vote_port": 4445,
   "admins": [
     "l.botros@cs.ru.nl",
     "b.vangastel@cs.ru.nl",
