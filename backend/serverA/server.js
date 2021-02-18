@@ -52,7 +52,6 @@ app.use('/api/v1/election', election)
 // Serve static public directory (frontend for now)
 app.use(express.static('public'))
 
-// Start server
 const server = app.listen(conf.port, conf.listen, () =>
   console.log(
     `Listening at ${conf.listen}:${conf.port}, publically available at ${conf.external_url}.`

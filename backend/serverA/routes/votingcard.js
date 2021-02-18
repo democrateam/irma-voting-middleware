@@ -165,7 +165,7 @@ router.get('/:id/issue/finish', (req, res) => {
 })
 
 router.get('/vote', (req, res) => {
-  res.redirect(307, conf.vote_url).end()
+  res.redirect(307, conf.vote_url)
 })
 
 module.exports = router

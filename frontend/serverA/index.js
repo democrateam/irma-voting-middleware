@@ -54,7 +54,7 @@ function onSuccess() {
         .then((result) => {
           if (result !== 200) throw new Error('issuance failed')
           console.log('issuance completed')
-          window.location.href = 'http://localhost:4445/'
+          window.location.href = '/api/v1/votingcard/vote'
         })
     })
     .catch((error) => console.error('error: ', error))
