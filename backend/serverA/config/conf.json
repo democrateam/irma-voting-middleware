@@ -9,5 +9,12 @@
   "port": 4444,
   "database_file": "./db/database.db",
   "vote_url_disabled": "https://election-vote.sustainablesoftware.info",
-	"vote_port": 4445
+  "vote_port": 4445,
+  "admins": [
+    "l.botros@cs.ru.nl",
+    "B.vanGastel@cs.ru.nl",
+    "bart@cs.ru.nl",
+    "mark.fonds@amsterdam.nl",
+    "ralph.van.raaij@groningen.nl"
+  ]
 }

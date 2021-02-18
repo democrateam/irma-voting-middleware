@@ -1,6 +1,7 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const webpack = require('webpack')
 
 // Specified to public path of backend
 outputA = path.resolve(process.cwd(), '../backend/serverA/public')
@@ -14,14 +15,11 @@ var config = {
     rules: [
       {
         test: /\.s[ac]ss$/i,
-        use: [
-          // Creates `style` nodes from JS strings
-          'style-loader',
-          // Translates CSS into CommonJS
-          'css-loader',
-          // Compiles Sass to CSS
-          'sass-loader',
-        ],
+        use: ['style-loader', 'css-loader', 'sass-loader'],
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
@@ -49,28 +47,44 @@ var config = {
       },
     ],
   },
+  plugins: [
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+    }),
+  ],
 }
 
 var serverAConfig = Object.assign({}, config, {
   name: 'serverA',
-  entry: { main: './serverA/index.js', issue: './serverA/issue.js' },
+  entry: {
+    index: './serverA/index.js',
+    admin: './serverA/admin.js',
+    login: './serverA/login.js',
+  },
   output: {
     path: outputA,
     filename: '[name].js',
   },
-  plugins: [
+  // do this programmatically...
+  plugins: config.plugins.concat([
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: './serverA/index.html',
-      chunks: ['main'],
+      chunks: ['index'],
     }),
     new HtmlWebpackPlugin({
-      filename: 'issue.html',
-      template: './serverA/issue.html',
-      chunks: ['issue'],
+      filename: 'admin.html',
+      template: './serverA/admin.html',
+      chunks: ['admin'],
     }),
-  ],
+    new HtmlWebpackPlugin({
+      filename: 'login.html',
+      template: './serverA/login.html',
+      chunks: ['login'],
+    }),
+  ]),
 })
 
 var serverBConfig = Object.assign({}, config, {
@@ -80,10 +94,10 @@ var serverBConfig = Object.assign({}, config, {
     path: outputB,
     filename: '[name].js',
   },
-  plugins: [
+  plugins: config.plugins.concat([
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({ template: './serverB/index.html' }),
-  ],
+  ]),
 })
 
 module.exports = [serverAConfig, serverBConfig]

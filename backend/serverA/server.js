@@ -1,49 +1,18 @@
 const express = require('express')
-const sqlite3 = require('better-sqlite3')
 const cookieSession = require('cookie-session')
+
 const { createProxyMiddleware: proxy } = require('http-proxy-middleware')
-const { networkInterfaces } = require('os');
+const bodyParser = require('body-parser')
+const sessionPtrMiddleware = require('./middlewares/sessionpointer')
 
-var conf = require('./config/conf.json')
+const admin = require('./routes/admin')
+const votingcard = require('./routes/votingcard')
+const election = require('./routes/election')
 
-if (!("external_url" in conf)) {
-	console.log("no 'external_url' set in config, resolving external ip address (assuming HTTP in dev mode)");
-	const nets = networkInterfaces();
-	for (const name of Object.keys(nets)) {
-			for (const net of nets[name]) {
-					// Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
-					if (net.family === 'IPv4' && !net.internal) {
-						conf.external_url = "http://" + net.address + ":" + conf.port;
-						if (!("vote_url" in conf)) {
-							conf.vote_url = "http://" + net.address + ":" + conf.vote_port;
-						}
-						break;
-					}
-			}
-	}
-}
+const db = require('./db/database')
+const conf = require('./config/config')
+
 const app = express()
-
-let	db = new sqlite3(conf.database_file);
-
-// Create a table and insert initial count
-db.transaction(() => {
-	db.run(
-		'CREATE TABLE IF NOT EXISTS count_table (id INTEGER PRIMARY KEY CHECK (id = 0), counter INTEGER NOT NULL);',
-		(err) => {
-			if (err) {
-				console.log(err)
-				throw err
-			}
-		}
-	)
-	db.run('INSERT INTO count_table (counter, id) VALUES (0, 0);', (err) => {
-		if (err && err.code != 'SQLITE_CONSTRAINT') {
-			console.log(err)
-			throw err
-		}
-	})
-})
 
 // First define the proxies,
 // then define the middlewares,
@@ -52,9 +21,11 @@ db.transaction(() => {
 // Proxy IRMA app traffic to IRMA server
 app.use('/irma', proxy({ target: `${conf.irma.url}`, changeOrigin: true }))
 
-// Make the database globally accesible
+// Make the database and the configuration globally accesible
+// So we don't need to import those in every route handler for example.
 app.use(function (req, _, next) {
   req.db = db
+  req.conf = conf
   next()
 })
 
@@ -68,19 +39,19 @@ app.use(
   })
 )
 
+// API routes
+// Checks for any session pointers and corrects them
+app.use('/api', sessionPtrMiddleware)
+app.use('/api', bodyParser.json())
+app.use('/api', bodyParser.urlencoded({ extended: false }))
 
-// Use all routes from /routes
-// TODO: could do this programmatically for all routes
-const admin = require('./routes/admin')
-app.use('/admin', admin)
+app.use('/api/v1/admin', admin)
+app.use('/api/v1/votingcard', votingcard)
+app.use('/api/v1/election', election)
 
-const user = require('./routes/votingcard')
-app.use('/user', user)
-
-// Serve static public directory
+// Serve static public directory (frontend for now)
 app.use(express.static('public'))
 
-// Start server
 const server = app.listen(conf.port, conf.listen, () =>
   console.log(
     `Listening at ${conf.listen}:${conf.port}, publically available at ${conf.external_url}.`
@@ -88,16 +59,13 @@ const server = app.listen(conf.port, conf.listen, () =>
 )
 
 // Gracefully shutdown the server
-process.on('SIGTERM', close)
-process.on('SIGINT', close)
+process.on('exit', close)
+process.on('SIGHUP', () => process.exit(128 + 1))
+process.on('SIGINT', () => process.exit(128 + 2))
+process.on('SIGTERM', () => process.exit(128 + 15))
 
 function close() {
   console.log('Shutting down server...')
   server.close()
-  db.close((err) => {
-    if (err) {
-      console.log(`Couldn't close database: ${err.message}$`)
-    }
-    console.log('Database connection closed.')
-  })
+  db.close()
 }

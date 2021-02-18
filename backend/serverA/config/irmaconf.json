@@ -12,7 +12,10 @@
     "serverA": {
       "auth_method": "token",
       "key": "8OC9rOOdkVOLel5vO61",
-      "disclose_perms": ["irma-demo.gemeente.personalData.*"],
+      "disclose_perms": [
+        "irma-demo.gemeente.personalData.*",
+        "pbdf.sidn-pbdf.email.email"
+      ],
       "issue_perms": ["irma-demo.stemmen.stempas"],
       "sign_perms": []
     }

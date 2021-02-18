@@ -28,6 +28,10 @@
     "@privacybydesign/irma-css": "^0.3.2",
     "@privacybydesign/irma-frontend": "^0.3.2",
     "bootstrap": "5.0.0-beta1",
+    "bootstrap-datepicker": "^1.9.0",
+    "bootstrap-table": "^1.18.2",
+    "jquery": "^3.5.1",
+    "jquery-form": "^4.3.0",
     "simplemde": "^1.11.2"
   }
 }

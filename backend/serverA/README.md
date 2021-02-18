@@ -31,10 +31,14 @@ npm run start
 
 The server exposes endpoints:
 
+- `/election/:name`: `GET` get public info about an election with `name`,
 - `/admin`: admin endpoints to create new election:
+  - `login/{start,finish}`: `GET` to start and finish an IRMA session to acquire an admin session. The endpoints listed below are accessible with this cookie.
+  - `elections`: `GET` responds with an overview of all elections.
   - `new`: `POST` create new elections.
-  - etc.
-- `/user`:
-  - `/disclose/{start,finish}`: perform a disclosure session. After completion, the user has a cookie.
-  - `/issue/{start,finish}`: perform an issuance session to retrieve a voting card, uses the disclosure result in cookie mentioned above as condition.
+  - `/:id/delete`: `DELETE`
+  - `logout`: `DELETE` to end the admin session
+- `/votingcard`:
+  - `/:id/disclose/{start,finish}`: perform an IRMA disclosure session. After completion, the user might have an authenticated session to get a voting card if the user doesn't have one already.
+  - `/:id/issue/{start,finish}`: perform an issuance session to retrieve a voting card, uses the disclosure result in cookie mentioned above as condition.
 - `/irma`: This traffic is proxied to a _local_ IRMA server configured in `config/conf.json`.

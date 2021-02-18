@@ -18,8 +18,8 @@ document.getElementById('confirm').addEventListener('click', function (event) {
   after.classList.remove('d-none')
   after.classList.add('d-block')
   console.log(event)
-	// strip HTML
-	text = text.replace(/(<([^>]+)>)/gi, "");
+  // strip HTML
+  text = text.replace(/(<([^>]+)>)/gi, '')
   text = text.trim()
   console.log(text)
 
