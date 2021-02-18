@@ -38,7 +38,7 @@ function onSuccess() {
         'Scan dan de QR code rechts om verder te gaan.'
       document.querySelector('#irma-help-btn').remove()
       document.querySelector('#irma-readmore-btn').remove()
-      let btn = document.querySelector('#election-step2')
+      let btn = document.querySelector('#btn-election-step2')
       btn.className = btn.className.replace('btn-secondary', 'btn-primary')
       options.session.url = options.session.url.replace('disclose', 'issue')
 

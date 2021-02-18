@@ -6,11 +6,7 @@ function fixSessionPtr(json, _, _) {
   try {
     if (json && 'u' in json && json.u.includes('session')) {
       let sessionPtr = json
-      if (conf.url) {
-        sessionPtr.u = `https://${conf.url}/irma/${sessionPtr.u}`
-      } else {
-        sessionPtr.u = `http://${conf.listen}:${conf.port}/irma/${sessionPtr.u}`
-      }
+      sessionPtr.u = `${conf.external_url}/irma/${sessionPtr.u}`
     }
   } catch (err) {
     console.log(('err during middleware', err))

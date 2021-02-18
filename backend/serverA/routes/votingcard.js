@@ -33,12 +33,7 @@ router.get('/:id/disclose/start', (req, res) => {
     .then(({ sessionPtr, token }) => {
       data.discloseToken = token
       data.authenticated = false
-			if (conf.external_url) {
-				sessionPtr.u = `${conf.external_url}/irma/${sessionPtr.u}`;
-			} else {
-				sessionPtr.u = `${conf.irma.url}/irma/${sessionPtr.u}`;
-			}
-      return res.status(200).json(sessionPtr)
+      res.status(200).json(sessionPtr).end()
     })
     .catch((err) => {
       console.log(err)
@@ -116,23 +111,18 @@ router.get('/:id/issue/start', (req, res) => {
             credential: 'irma-demo.stemmen.stempas',
             attributes: {
               election: row.name,
-              voteURL: `${conf.serverB.url}/?name=${row.name}`,
+              voteURL: `${conf.vote_url}/?name=${row.name}`,
               start: row.start,
               end: row.end,
             },
           },
-      ],
-    })
-    .then(({ sessionPtr, token }) => {
-			data.issueToken = token
-			if (conf.external_url) {
-				sessionPtr.u = `${conf.external_url}/irma/${sessionPtr.u}`;
-			} else {
-				sessionPtr.u = `${conf.irma.url}/irma/${sessionPtr.u}`;
-			}
-      return res.status(200).send(sessionPtr)
-    })
-    .catch((err) => res.status(405).send(`error: ${err}$`))
+        ],
+      })
+      .then(({ sessionPtr, token }) => {
+        data.issueToken = token
+        return res.status(200).send(sessionPtr)
+      })
+      .catch((err) => res.status(405).send(`error: ${err}$`))
   } catch (err) {
     res.status(400).json({ err: err.message }).end()
   }
@@ -175,8 +165,7 @@ router.get('/:id/issue/finish', (req, res) => {
 })
 
 router.get('/vote', (req, res) => {
-  return res.status(307).header("Location", conf.vote_url).end();
+  res.redirect(307, conf.vote_url).end()
 })
-
 
 module.exports = router

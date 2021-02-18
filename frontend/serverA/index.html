@@ -21,8 +21,7 @@
 					<div class="col-md-8 ps-0">
 						<div class="card-body position-relative h-100">
 							<h2 id="election-question"></h2>
-							<p class="card-text" id="election-step"></p>
-							<p class="card-text">Om te kunnen stemmen wordt eerst met IRMA uw identiteit vastgesteld. Dit voorkomt dubbel stemmen. U kunt daarna een anonieme niet-traceerbare stemkaart in uw IRMA app laden. Daarna kunt u op een andere website deze stemkaart inzetten om te stemmen. Doordat het stemmen op een andere website gebeurt, kunt u niet getraceerd worden en weet niemand wie de stem uitbrengt. Houd daarvoor wel uw stemkaart prive.</p>
+							<p class="card-text" id="election-step">Om te kunnen stemmen wordt eerst met IRMA uw identiteit vastgesteld. Dit voorkomt dubbel stemmen. U kunt daarna een anonieme niet-traceerbare stemkaart in uw IRMA app laden. Daarna kunt u op een andere website deze stemkaart inzetten om te stemmen. Doordat het stemmen op een andere website gebeurt, kunt u niet getraceerd worden en weet niemand wie de stem uitbrengt. Houd daarvoor wel uw stemkaart prive.</p>
 							<p id="irma-help-text">Heeft u al IRMA, scan dan de QR code rechts om verder te gaan.</p>
 							<a id="irma-help-btn" href="https://irma.app/" class="btn btn-outline-dark">nog geen IRMA?</a>
 							<a id="irma-readmore-btn" href="#" class="btn btn-outline-dark float-end">lees meer</a>
@@ -42,9 +41,9 @@
 			<div class="progress" style="height: 0.1rem;">
 				<div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 			</div>
-			<button type="button" class="position-absolute top-0 start-0 translate-middle-y btn btn-sm btn-primary rounded-pill">Identificeren</button>
-			<button type="button" class="position-absolute top-0 start-50 translate-middle btn btn-sm btn-secondary rounded-pill">Stemkaart ophalen</button>
-			<button type="button" class="position-absolute top-0 end-0 translate-middle-y btn btn-sm btn-secondary rounded-pill">Stem uitbrengen</button>
+			<button id="btn-election-step1" type="button" class="position-absolute top-0 start-0 translate-middle-y btn btn-sm btn-primary rounded-pill">Identificeren</button>
+			<button id="btn-election-step2" type="button" class="position-absolute top-0 start-50 translate-middle btn btn-sm btn-secondary rounded-pill">Stemkaart ophalen</button>
+			<button id="btn-election-step3" type="button" class="position-absolute top-0 end-0 translate-middle-y btn btn-sm btn-secondary rounded-pill">Stem uitbrengen</button>
 		</div>
 </div>
 
