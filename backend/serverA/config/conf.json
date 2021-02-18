@@ -5,6 +5,9 @@
   },
   "mode": "dev",
   "url_disabled": "bitpowder.com:4444",
+  "serverB": {
+    "url": "http://localhost:4445"
+  },
   "listen": "0.0.0.0",
   "port": 4444,
   "database_file": "./db/database.db",

@@ -18,6 +18,10 @@ var config = {
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
+      {
         test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
         exclude: [/images/],
         use: [
@@ -44,7 +48,6 @@ var config = {
     ],
   },
   plugins: [
-    new CleanWebpackPlugin(),
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
@@ -55,9 +58,9 @@ var config = {
 var serverAConfig = Object.assign({}, config, {
   name: 'serverA',
   entry: {
-    main: './serverA/index.js',
-    admin: './serverA/admin',
-    login: './serverA/login',
+    index: './serverA/index.js',
+    admin: './serverA/admin.js',
+    login: './serverA/login.js',
   },
   output: {
     path: outputA,
@@ -65,10 +68,11 @@ var serverAConfig = Object.assign({}, config, {
   },
   // do this programmatically...
   plugins: config.plugins.concat([
+    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: './serverA/index.html',
-      chunks: ['main'],
+      chunks: ['index'],
     }),
     new HtmlWebpackPlugin({
       filename: 'admin.html',
@@ -91,6 +95,7 @@ var serverBConfig = Object.assign({}, config, {
     filename: '[name].js',
   },
   plugins: config.plugins.concat([
+    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({ template: './serverB/index.html' }),
   ]),
 })

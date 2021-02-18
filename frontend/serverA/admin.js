@@ -1,3 +1,5 @@
+require('./../node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css')
+require('./../node_modules/bootstrap-table/dist/bootstrap-table.min.css')
 require('./../assets/style.scss')
 require('bootstrap-datepicker')
 require('bootstrap-table')
@@ -69,6 +71,12 @@ $(document).ready(function () {
         .on('click', () => {
           deleteElection(window.event.target.id)
         })
+    },
+    onLoadError: () => {
+      console.log('failed to load table')
+      $('#alert_placeholder').html(
+        `<div class="alert alert-warning" role="alert">U bent niet ingelogd. Log <a href="login.html">hier</a> in.</div>`
+      )
     },
   })
 })

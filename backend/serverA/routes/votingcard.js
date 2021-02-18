@@ -91,11 +91,11 @@ router.get('/:id/issue/start', (req, res) => {
   if (!data.authenticated) return res.status(403).json({ err: 'not permitted' })
 
   try {
-    let count = req.db
-      .prepare(`SELECT COUNT(*) FROM votingcards WHERE id = ? AND identity = ?`)
+    let exists = req.db
+      .prepare(`SELECT * FROM votingcards WHERE id = ? AND identity = ?`)
       .get(req.params.id, identity)
-    if (count) throw new Error('already got a voting card')
     console.log(exists)
+    if (exists) throw new Error('already got a voting card')
 
     let row = req.db
       .prepare('SELECT name, start, end FROM elections WHERE id = ?')
@@ -111,7 +111,7 @@ router.get('/:id/issue/start', (req, res) => {
             credential: 'irma-demo.stemmen.stempas',
             attributes: {
               election: row.name,
-              voteURL: `${conf.serverB.url}/${row.name}`,
+              voteURL: `${conf.serverB.url}/?name=${row.name}`,
               start: row.start,
               end: row.end,
             },
