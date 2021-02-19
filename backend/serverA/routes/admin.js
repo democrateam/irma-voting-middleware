@@ -58,7 +58,7 @@ router.get('/elections', (req, res) => {
 })
 
 // new: create a new election
-router.post('/new', function (req, res) {
+router.post('/new', (req, res) => {
   let db = req.db
   let stmt = db.prepare(
     `INSERT INTO elections (name, question, options, start, end, participants) VALUES (?, ?, ?, ?, ?, ?);`
@@ -87,6 +87,45 @@ router.post('/new', function (req, res) {
     }
   }
   return res.status(200).json({ msg: 'success' })
+})
+
+// update: update an election
+router.post('/:id/update', (req, res) => {
+  console.log(req.params.id)
+  console.log(req.body)
+
+  // These columns are allowed to be changed
+  const allowed = [
+    'election-name',
+    'election-question',
+    'election-description',
+    'election-start',
+    'election-end',
+  ]
+
+  const filtered = Object.keys(req.body)
+    .filter((key) => allowed.includes(key))
+    .reduce((obj, key) => {
+      return {
+        ...obj,
+        [key]: req.body[key],
+      }
+    }, {})
+
+  let str = Object.keys(filtered)
+    .map((k) => `${k.split('-')[1]} = \'${filtered[k]}\'`)
+    .join(', ')
+
+  // No on-going elections are allowed to be changed..
+  let stmt = `UPDATE elections SET ${str} WHERE id = ? AND (DATETIME('now')) < start`
+  console.log(stmt)
+  try {
+    req.db.prepare(stmt).run(req.params.id)
+    res.status(204).end()
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ err: err.message })
+  }
 })
 
 router.delete('/:id/delete', (req, res) => {
