@@ -22,7 +22,7 @@ let options = {
   },
 }
 
-function onSuccess() {
+function onSuccess(id) {
   var irmaWeb = irma.newWeb(options)
   irmaWeb
     .start()
@@ -54,7 +54,7 @@ function onSuccess() {
         .then((result) => {
           if (result !== 200) throw new Error('issuance failed')
           console.log('issuance completed')
-          window.location.href = '/api/v1/votingcard/vote'
+          window.location.href = `/vote?name=${id}`
         })
     })
     .catch((error) => console.error('error: ', error))
@@ -97,6 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       document.querySelector('#election-step').innerText = step1
     })
-    .then(onSuccess)
+    .then(onSuccess(json.id))
     .catch(onFail)
 })

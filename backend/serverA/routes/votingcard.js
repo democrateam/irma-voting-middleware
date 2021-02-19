@@ -120,7 +120,7 @@ router.get('/:id/issue/start', (req, res) => {
       })
       .then(({ sessionPtr, token }) => {
         data.issueToken = token
-        return res.status(200).send(sessionPtr)
+        return res.status(200).json(sessionPtr)
       })
       .catch((err) => res.status(405).send(`error: ${err}$`))
   } catch (err) {

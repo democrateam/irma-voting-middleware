@@ -8,21 +8,28 @@ const irmaBackend = new IrmaBackend(conf.irma.url, {
 
 var router = express.Router()
 
-router.post('/start', async (req, res) => {
+router.post('/:id/start', async (req, res) => {
+  // TODO: get name from id
   return irmaBackend
     .startSession({
       '@context': 'https://irma.app/ld/request/signature/v2',
       message: req.body.text,
-      disclose: conf.attributes,
+      diclose: [
+        [
+          [
+            { type: 'irma-demo.stemmen.stempas.votingnumber', value: null },
+            {
+              type: 'irma.demo.stemmen.stempas.election',
+              value: 'radboudgebouw',
+            }
+          ],
+        ],
+      ],
     })
     .then(({ sessionPtr, token }) => {
       req.session.token = token
       req.session.voted = false
-      if (conf.external_url) {
-        sessionPtr.u = `${conf.external_url}/irma/${sessionPtr.u}`
-      } else {
-        sessionPtr.u = `${conf.irma.url}/irma/${sessionPtr.u}`
-      }
+      sessionPtr.u = `${conf.external_url}/irma/${sessionPtr.u}`
       return res.status(200).json(sessionPtr)
     })
     .catch((err) => {
@@ -31,20 +38,21 @@ router.post('/start', async (req, res) => {
     })
 })
 
-router.get('/finish', (req, res) => {
+router.get('/:id/finish', (req, res) => {
   if (req.session.voted) return res.status(403).json({ err: 'already voted' })
 
   return irmaBackend.getSessionResult(req.session.token).then((result) => {
-    console.log(result)
     if (result.status !== 'DONE' || result.proofStatus !== 'VALID')
       return res.status(403).json({ err: 'session not done/valid' })
 
     let signature = result.signature
+    console.log(result.disclosed)
+    console.log(signature)
     //TODO: Store signature + attributes + message in database
 
     // Mark the voting session completed.
     req.session.voted = true
-    return res.status(200).end()
+    return res.status(204).end()
   })
 })
 

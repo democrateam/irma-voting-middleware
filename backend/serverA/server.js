@@ -52,6 +52,10 @@ app.use('/api/v1/election', election)
 // Serve static public directory (frontend for now)
 app.use(express.static('public'))
 
+app.get('/vote', (req, res) => {
+  res.redirect(307, conf.vote_url)
+})
+
 const server = app.listen(conf.port, conf.listen, () =>
   console.log(
     `Listening at ${conf.listen}:${conf.port}, publically available at ${conf.external_url}.`

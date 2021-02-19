@@ -131,8 +131,8 @@ router.post('/:id/update', (req, res) => {
 router.delete('/:id/delete', (req, res) => {
   try {
     req.db.transaction(() => {
-      req.db.prepare('DELETE FROM elections WHERE id = ?').run(req.params.id)
       req.db.prepare('DELETE FROM votingcards WHERE id = ?').run(req.params.id)
+      req.db.prepare('DELETE FROM elections WHERE id = ?').run(req.params.id)
     })()
     res.status(204).end()
   } catch (err) {
