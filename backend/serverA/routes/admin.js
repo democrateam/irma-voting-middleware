@@ -143,4 +143,18 @@ router.delete('/:id/delete', (req, res) => {
   }
 })
 
+// Returns a list of identities that have retrieved their voting card
+router.get('/:id/votingcards', (req, res) => {
+  let id = req.params.id
+  let stmt = req.db.prepare('SELECT identity FROM votingcards WHERE id = ?;')
+  try {
+    let rows = stmt.all(id)
+    let result = rows.map(row => JSON.parse(row.identity))
+    res.status(200).json(result).end()
+  } catch (err) {
+    console.log(err)
+    res.status(400).json({ err: err.message }).end()
+  }
+})
+
 module.exports = router
