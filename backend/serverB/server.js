@@ -41,7 +41,7 @@ app.use('/vote', bodyParser.json())
 app.use('/vote', vote)
 
 // Serve static public directory
-app.use(express.static('public'))
+app.use(express.static('public', { extensions: ['html'] }))
 
 // Start server
 const server = app.listen(conf.port, conf.listen, () =>
