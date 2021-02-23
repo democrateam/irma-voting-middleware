@@ -71,11 +71,11 @@ $(document).ready(function () {
         events: {
           'click .list': (e, value, row, index) => {
             console.log('you clicked list')
-            window.location.href = `election?id=${row.id}`
+            window.location.href = `/admin/election?id=${row.id}`
           },
           'click .remove': (e, value, row, index) => deleteElection(row.id),
           'click .vote': (e, value, row, index) => {
-            window.location.href = `../user/?name=${row.name}`
+            window.location.href = `/user/?name=${row.name}`
           },
         },
       },
@@ -86,7 +86,7 @@ $(document).ready(function () {
     onLoadError: () => {
       console.log('failed to load table')
       $('#alert_placeholder').html(
-        `<div class="alert alert-warning" role="alert">U bent niet ingelogd. Log <a href="login">hier</a> in.</div>`
+        `<div class="alert alert-warning" role="alert">U bent niet ingelogd. Log <a href="/admin/login">hier</a> in.</div>`
       )
     },
   })

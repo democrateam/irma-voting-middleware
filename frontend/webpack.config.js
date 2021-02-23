@@ -58,8 +58,8 @@ var config = {
 var serverAConfig = Object.assign({}, config, {
   name: 'serverA',
   entry: {
-    index: './serverA/user/index.js',
-    admin: './serverA/admin/admin.js',
+    userIndex: './serverA/user/index.js',
+    adminIndex: './serverA/admin/index.js',
     login: './serverA/admin/login.js',
     election: './serverA/admin/election.js',
   },
@@ -73,12 +73,12 @@ var serverAConfig = Object.assign({}, config, {
     new HtmlWebpackPlugin({
       filename: 'user/index.html',
       template: './serverA/user/index.html',
-      chunks: ['index'],
+      chunks: ['userIndex'],
     }),
     new HtmlWebpackPlugin({
       filename: 'admin/index.html',
       template: './serverA/admin/index.html',
-      chunks: ['admin'],
+      chunks: ['adminIndex'],
     }),
     new HtmlWebpackPlugin({
       filename: 'admin/login.html',
