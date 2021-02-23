@@ -86,7 +86,7 @@ $(document).ready(function () {
     onLoadError: () => {
       console.log('failed to load table')
       $('#alert_placeholder').html(
-        `<div class="alert alert-warning" role="alert">U bent niet ingelogd. Log <a href="login.html">hier</a> in.</div>`
+        `<div class="alert alert-warning" role="alert">U bent niet ingelogd. Log <a href="login">hier</a> in.</div>`
       )
     },
   })
