@@ -50,6 +50,7 @@ $(document).ready(function () {
   })
 
   $('#overview').bootstrapTable({
+    showRefresh: true,
     columns: [
       { field: 'id', title: 'Election ID' },
       { field: 'name', title: 'Election Name' },
@@ -60,17 +61,23 @@ $(document).ready(function () {
       {
         field: 'actions',
         title: 'Actions',
-        formatter: (value, row, index) => {
-          return `<button id='${row.id}' type='button' style='font-size:17px' class='btn btn-outline-danger border-0' ><i class='far fa-trash-alt'></i></button>`
+        formatter: () => {
+          return `
+          <button type='button' style='font-size:17px' class='list btn btn-outline-primary border-0' ><i class="far fa-list-alt"></i></button>
+          <button type='button' style='font-size:17px' class='remove btn btn-outline-danger border-0' ><i class='far fa-trash-alt'></i></button>
+          `
+        },
+        events: {
+          'click .list': (e, value, row, index) => {
+            console.log('you clicked list')
+            window.location.href = `/election?id=${row.id}`
+          },
+          'click .remove': (e, value, row, index) => deleteElection(row.id),
         },
       },
     ],
     onLoadSuccess: () => {
-      $('#overview :button')
-        .parent()
-        .on('click', () => {
-          deleteElection(window.event.target.id)
-        })
+      console.log('table loaded')
     },
     onLoadError: () => {
       console.log('failed to load table')

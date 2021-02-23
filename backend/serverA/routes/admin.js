@@ -149,7 +149,7 @@ router.get('/:id/votingcards', (req, res) => {
   let stmt = req.db.prepare('SELECT identity FROM votingcards WHERE id = ?;')
   try {
     let rows = stmt.all(id)
-    let result = rows.map(row => JSON.parse(row.identity))
+    let result = rows.map((row) => JSON.parse(row.identity))
     res.status(200).json(result).end()
   } catch (err) {
     console.log(err)

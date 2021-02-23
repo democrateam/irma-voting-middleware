@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const queryString = window.location.search
   const urlParams = new URLSearchParams(queryString)
 
-  let id = urlParams.get('id')
-  if (!id) throw new Error('no id')
+  let id = urlParams.get('name')
+  if (!id) throw new Error('no name')
 
   document
     .getElementById('confirm')
