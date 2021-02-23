@@ -8,20 +8,20 @@ const irmaBackend = new IrmaBackend(conf.irma.url, {
 
 var router = express.Router()
 
-router.post('/:id/start', async (req, res) => {
+router.post('/:name/start', (req, res) => {
   // TODO: get name from id
   return irmaBackend
     .startSession({
       '@context': 'https://irma.app/ld/request/signature/v2',
       message: req.body.text,
-      diclose: [
+      disclose: [
         [
           [
             { type: 'irma-demo.stemmen.stempas.votingnumber', value: null },
             {
-              type: 'irma.demo.stemmen.stempas.election',
+              type: 'irma-demo.stemmen.stempas.election',
               value: 'radboudgebouw',
-            }
+            },
           ],
         ],
       ],
@@ -38,7 +38,7 @@ router.post('/:id/start', async (req, res) => {
     })
 })
 
-router.get('/:id/finish', (req, res) => {
+router.get('/:name/finish', (req, res) => {
   if (req.session.voted) return res.status(403).json({ err: 'already voted' })
 
   return irmaBackend.getSessionResult(req.session.token).then((result) => {
@@ -48,7 +48,8 @@ router.get('/:id/finish', (req, res) => {
     let signature = result.signature
     console.log(result.disclosed)
     console.log(signature)
-    //TODO: Store signature + attributes + message in database
+    //TODO: Store signature + attribute (election + message in database
+    //TODO: Make sure no more is stored than required.
 
     // Mark the voting session completed.
     req.session.voted = true

@@ -12,7 +12,7 @@
     "serverB": {
       "auth_method": "token",
       "key": "0DLA0eaemnU20XW3YH4",
-      "sign_perms": ["irma-demo.stemmen.stempas.votingnumber"]
+      "sign_perms": ["irma-demo.stemmen.stempas.*"]
     }
   }
 }
