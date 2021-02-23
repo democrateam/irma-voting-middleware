@@ -65,6 +65,7 @@ $(document).ready(function () {
           return `
           <button type='button' style='font-size:17px' class='list btn btn-outline-primary border-0' ><i class="far fa-list-alt"></i></button>
           <button type='button' style='font-size:17px' class='remove btn btn-outline-danger border-0' ><i class='far fa-trash-alt'></i></button>
+          <button type='button' style='font-size:17px' class='vote btn btn-outline-success border-0' ><i class="fas fa-vote-yea"></i></button>
           `
         },
         events: {
@@ -73,6 +74,7 @@ $(document).ready(function () {
             window.location.href = `/election?id=${row.id}`
           },
           'click .remove': (e, value, row, index) => deleteElection(row.id),
+          'click .vote': (e, value, row, index) => { window.location.href = `../?name=${row.name}`}
         },
       },
     ],
