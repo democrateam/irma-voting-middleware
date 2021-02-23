@@ -1,6 +1,6 @@
-require('./../node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css')
-require('./../node_modules/bootstrap-table/dist/bootstrap-table.min.css')
-require('./../assets/style.scss')
+require('./../../node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css')
+require('./../../node_modules/bootstrap-table/dist/bootstrap-table.min.css')
+require('./../../assets/style.scss')
 require('bootstrap-datepicker')
 require('bootstrap-table')
 require('jquery-form')
@@ -71,10 +71,12 @@ $(document).ready(function () {
         events: {
           'click .list': (e, value, row, index) => {
             console.log('you clicked list')
-            window.location.href = `/election?id=${row.id}`
+            window.location.href = `election?id=${row.id}`
           },
           'click .remove': (e, value, row, index) => deleteElection(row.id),
-          'click .vote': (e, value, row, index) => { window.location.href = `../?name=${row.name}`}
+          'click .vote': (e, value, row, index) => {
+            window.location.href = `../user/?name=${row.name}`
+          },
         },
       },
     ],

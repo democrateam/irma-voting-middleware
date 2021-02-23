@@ -1,5 +1,5 @@
 const irma = require('@privacybydesign/irma-frontend')
-const style = require('./../assets/style.scss')
+const style = require('./../../assets/style.scss')
 
 // If this gets any more complicated whe should use a state machine
 

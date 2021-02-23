@@ -1,5 +1,5 @@
 const irma = require('@privacybydesign/irma-frontend')
-const style = require('./../assets/style.scss')
+const style = require('./../../assets/style.scss')
 
 let options = {
   debugging: true,
