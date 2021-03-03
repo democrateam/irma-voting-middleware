@@ -87,8 +87,16 @@ document.addEventListener('DOMContentLoaded', () => {
     .then((json) => {
       options.session.url = `/api/v1/votingcard/${json.id}/disclose`
       document.querySelector('#election-question').innerText = json.question
-      document.querySelector('#election-date').innerText = new Date(
+      document.querySelector('#election-date-start').innerText = new Date(
         json.start
+      ).toLocaleDateString('nl-NL', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+      document.querySelector('#election-date-end').innerText = new Date(
+        json.end
       ).toLocaleDateString('nl-NL', {
         weekday: 'long',
         year: 'numeric',
