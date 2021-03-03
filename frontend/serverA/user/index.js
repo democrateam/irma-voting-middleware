@@ -1,5 +1,7 @@
 const irma = require('@privacybydesign/irma-frontend')
-const style = require('./../assets/style.scss')
+const style = require('./../../assets/style.scss')
+
+// If this gets any more complicated whe should use a state machine
 
 const step1 = `Om te kunnen stemmen wordt eerst met IRMA uw identiteit vastgesteld. Dit voorkomt dubbel stemmen. U kunt daarna een anonieme niet-traceerbare stemkaart in uw IRMA app laden. Daarna kunt u op een andere website deze stemkaart inzetten om te stemmen. Doordat het stemmen op een andere website gebeurt, kunt u niet getraceerd worden en weet niemand wie de stem uitbrengt. Houd daarvoor wel uw stemkaart prive.`
 const step2 = `Uw identiteit is vastgesteld. U mag stemmen. Um te kunnen stemmen kunt u nu een anonieme niet-traceerbare stemkaart in uw IRMA app laden. Daarna kunt u op een andere website deze stemkaart inzetten om te stemmen. Doordat het stemmen op een andere website gebeurt, kunt u niet getraceerd worden en weet niemand wie de stem uitbrengt. Houd daarvoor wel uw stemkaart prive.`
@@ -22,7 +24,7 @@ let options = {
   },
 }
 
-function onSuccess() {
+function onElectionData(electionData) {
   var irmaWeb = irma.newWeb(options)
   irmaWeb
     .start()
@@ -45,6 +47,11 @@ function onSuccess() {
       irmaWeb = irma.newWeb(options)
       irmaWeb
         .start()
+        .catch((err) => {
+          // TODO: find out why this doesn't get triggered
+          console.log(err)
+          throw err
+        })
         .then((result) => {
           // wait two seconds to display check mark
           return new Promise((resolve) =>
@@ -54,10 +61,14 @@ function onSuccess() {
         .then((result) => {
           if (result !== 200) throw new Error('issuance failed')
           console.log('issuance completed')
-          window.location.href = '/api/v1/votingcard/vote'
+          window.location.href = `/api/v1/votingcard/${electionData.name}/vote`
         })
     })
-    .catch((error) => console.error('error: ', error))
+    .catch((error) => {
+      console.error('error: ', error)
+      if (error.err === 'already got a voting card')
+        irmaWeb.abort('Je hebt al een stemkaart')
+    })
 }
 
 function onFail() {
@@ -104,7 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
         day: 'numeric',
       })
       document.querySelector('#election-step').innerText = step1
+      return json
     })
-    .then(onSuccess)
+    .then((electionData) => onElectionData(electionData))
     .catch(onFail)
 })

@@ -1,6 +1,6 @@
-require('./../node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css')
-require('./../node_modules/bootstrap-table/dist/bootstrap-table.min.css')
-require('./../assets/style.scss')
+require('./../../node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css')
+require('./../../node_modules/bootstrap-table/dist/bootstrap-table.min.css')
+require('./../../assets/style.scss')
 require('bootstrap-datepicker')
 require('bootstrap-table')
 require('jquery-form')
@@ -50,6 +50,7 @@ $(document).ready(function () {
   })
 
   $('#overview').bootstrapTable({
+    showRefresh: true,
     columns: [
       { field: 'id', title: 'Election ID' },
       { field: 'name', title: 'Election Name' },
@@ -60,22 +61,32 @@ $(document).ready(function () {
       {
         field: 'actions',
         title: 'Actions',
-        formatter: (value, row, index) => {
-          return `<button id='${row.id}' type='button' style='font-size:17px' class='btn btn-outline-danger border-0' ><i class='far fa-trash-alt'></i></button>`
+        formatter: () => {
+          return `
+          <button type='button' style='font-size:17px' class='list btn btn-outline-primary border-0' ><i class="far fa-list-alt"></i></button>
+          <button type='button' style='font-size:17px' class='remove btn btn-outline-danger border-0' ><i class='far fa-trash-alt'></i></button>
+          <button type='button' style='font-size:17px' class='vote btn btn-outline-success border-0' ><i class="fas fa-vote-yea"></i></button>
+          `
+        },
+        events: {
+          'click .list': (e, value, row, index) => {
+            console.log('you clicked list')
+            window.location.href = `/admin/election?id=${row.id}`
+          },
+          'click .remove': (e, value, row, index) => deleteElection(row.id),
+          'click .vote': (e, value, row, index) => {
+            window.location.href = `/user/?name=${row.name}`
+          },
         },
       },
     ],
     onLoadSuccess: () => {
-      $('#overview :button')
-        .parent()
-        .on('click', () => {
-          deleteElection(window.event.target.id)
-        })
+      console.log('table loaded')
     },
     onLoadError: () => {
       console.log('failed to load table')
       $('#alert_placeholder').html(
-        `<div class="alert alert-warning" role="alert">U bent niet ingelogd. Log <a href="login.html">hier</a> in.</div>`
+        `<div class="alert alert-warning" role="alert">U bent niet ingelogd. Log <a href="/admin/login">hier</a> in.</div>`
       )
     },
   })

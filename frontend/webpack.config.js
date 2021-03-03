@@ -58,9 +58,10 @@ var config = {
 var serverAConfig = Object.assign({}, config, {
   name: 'serverA',
   entry: {
-    index: './serverA/index.js',
-    admin: './serverA/admin.js',
-    login: './serverA/login.js',
+    userIndex: './serverA/user/index.js',
+    adminIndex: './serverA/admin/index.js',
+    login: './serverA/admin/login.js',
+    election: './serverA/admin/election.js',
   },
   output: {
     path: outputA,
@@ -70,19 +71,24 @@ var serverAConfig = Object.assign({}, config, {
   plugins: config.plugins.concat([
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: './serverA/index.html',
-      chunks: ['index'],
+      filename: 'user/index.html',
+      template: './serverA/user/index.html',
+      chunks: ['userIndex'],
     }),
     new HtmlWebpackPlugin({
-      filename: 'admin.html',
-      template: './serverA/admin.html',
-      chunks: ['admin'],
+      filename: 'admin/index.html',
+      template: './serverA/admin/index.html',
+      chunks: ['adminIndex'],
     }),
     new HtmlWebpackPlugin({
-      filename: 'login.html',
-      template: './serverA/login.html',
+      filename: 'admin/login.html',
+      template: './serverA/admin/login.html',
       chunks: ['login'],
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'admin/election.html',
+      template: './serverA/admin/election.html',
+      chunks: ['election'],
     }),
   ]),
 })

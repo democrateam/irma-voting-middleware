@@ -120,9 +120,11 @@ router.get('/:id/issue/start', (req, res) => {
       })
       .then(({ sessionPtr, token }) => {
         data.issueToken = token
-        return res.status(200).send(sessionPtr)
+        return res.status(200).json(sessionPtr)
       })
-      .catch((err) => res.status(405).send(`error: ${err}$`))
+      .catch((err) => {
+        throw err
+      })
   } catch (err) {
     res.status(400).json({ err: err.message }).end()
   }
@@ -164,8 +166,8 @@ router.get('/:id/issue/finish', (req, res) => {
   }
 })
 
-router.get('/vote', (req, res) => {
-  res.redirect(307, conf.vote_url)
+router.get('/:name/vote', (req, res) => {
+  res.redirect(307, `${conf.vote_url}/?name=${req.params.name}`)
 })
 
 module.exports = router

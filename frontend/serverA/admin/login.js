@@ -1,5 +1,5 @@
 const irma = require('@privacybydesign/irma-frontend')
-const style = require('./../assets/style.scss')
+const style = require('./../../assets/style.scss')
 
 let options = {
   debugging: true,
@@ -22,5 +22,5 @@ let options = {
 
 var irmaWeb = irma.newWeb(options)
 irmaWeb.start().then((status) => {
-  if (status === 200) window.location.href = 'admin.html'
+  if (status === 200) window.location.href = '/admin/'
 })

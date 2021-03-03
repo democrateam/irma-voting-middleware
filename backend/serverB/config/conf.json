@@ -7,6 +7,5 @@
   "external_url_disabled": "https://election-vote.sustainablesoftware.info",
   "listen": "0.0.0.0",
   "port": 4445,
-  "database_file": "./db/database.db",
-  "attributes": [[["irma-demo.stemmen.stempas.votingnumber"]]]
+  "database_file": "./db/database.db"
 }

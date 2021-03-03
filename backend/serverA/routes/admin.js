@@ -58,7 +58,7 @@ router.get('/elections', (req, res) => {
 })
 
 // new: create a new election
-router.post('/new', function (req, res) {
+router.post('/new', (req, res) => {
   let db = req.db
   let stmt = db.prepare(
     `INSERT INTO elections (name, question, options, start, end, participants) VALUES (?, ?, ?, ?, ?, ?);`
@@ -89,11 +89,50 @@ router.post('/new', function (req, res) {
   return res.status(200).json({ msg: 'success' })
 })
 
+// update: update an election
+router.post('/:id/update', (req, res) => {
+  console.log(req.params.id)
+  console.log(req.body)
+
+  // These columns are allowed to be changed
+  const allowed = [
+    'election-name',
+    'election-question',
+    'election-description',
+    'election-start',
+    'election-end',
+  ]
+
+  const filtered = Object.keys(req.body)
+    .filter((key) => allowed.includes(key))
+    .reduce((obj, key) => {
+      return {
+        ...obj,
+        [key]: req.body[key],
+      }
+    }, {})
+
+  let str = Object.keys(filtered)
+    .map((k) => `${k.split('-')[1]} = \'${filtered[k]}\'`)
+    .join(', ')
+
+  // No on-going elections are allowed to be changed..
+  let stmt = `UPDATE elections SET ${str} WHERE id = ? AND (DATETIME('now')) < start`
+  console.log(stmt)
+  try {
+    req.db.prepare(stmt).run(req.params.id)
+    res.status(204).end()
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ err: err.message })
+  }
+})
+
 router.delete('/:id/delete', (req, res) => {
   try {
     req.db.transaction(() => {
-      req.db.prepare('DELETE FROM elections WHERE id = ?').run(req.params.id)
       req.db.prepare('DELETE FROM votingcards WHERE id = ?').run(req.params.id)
+      req.db.prepare('DELETE FROM elections WHERE id = ?').run(req.params.id)
     })()
     res.status(204).end()
   } catch (err) {
@@ -101,6 +140,20 @@ router.delete('/:id/delete', (req, res) => {
       console.log(err)
       res.status(400).json({ err: err.message })
     }
+  }
+})
+
+// Returns a list of identities that have retrieved their voting card
+router.get('/:id/votingcards', (req, res) => {
+  let id = req.params.id
+  let stmt = req.db.prepare('SELECT identity FROM votingcards WHERE id = ?;')
+  try {
+    let rows = stmt.all(id)
+    let result = rows.map((row) => JSON.parse(row.identity))
+    res.status(200).json(result).end()
+  } catch (err) {
+    console.log(err)
+    res.status(400).json({ err: err.message }).end()
   }
 })
 

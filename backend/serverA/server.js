@@ -50,7 +50,7 @@ app.use('/api/v1/votingcard', votingcard)
 app.use('/api/v1/election', election)
 
 // Serve static public directory (frontend for now)
-app.use(express.static('public'))
+app.use(express.static('public', { extensions: ['html'] }))
 
 const server = app.listen(conf.port, conf.listen, () =>
   console.log(
