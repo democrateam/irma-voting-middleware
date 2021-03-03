@@ -35,8 +35,8 @@ All outside communication is to the node.js webserver (which will facility commu
   - `yarn run start_serverB_irma` (starts IRMA process for server B)
 
 5. Login in to the administrator section of the servers to create a poll. The same poll needs to be created at both server A as server B (because the servers do not share data).
-  - server A: [http://127.0.0.1:4444](http://127.0.0.1:4444)
-  - server B: [http://127.0.0.1:4445](http://127.0.0.1:4445)
+  - server A: [http://127.0.0.1:4444/login.html](http://127.0.0.1:4444/login.html)
+  - server B: [http://127.0.0.1:4445/login.html](http://127.0.0.1:4445/login.html)
 
 ## Requirements
 
