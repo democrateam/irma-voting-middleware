@@ -27,7 +27,7 @@ router.get('/login/start', (req, res) => {
       req.session.admin_token = token
       return res.status(200).json(sessionPtr)
     })
-    .catch((err) => res.status(403).json({ err: err }))
+    .catch((err) => res.status(403).json({ err: err.message }))
 })
 
 router.get('/login/finish', (req, res) => {
@@ -35,15 +35,15 @@ router.get('/login/finish', (req, res) => {
     .getSessionResult(req.session.admin_token)
     .then((result) => {
       if (!(result.proofStatus === 'VALID' && result.status === 'DONE'))
-        throw new Error('not valid or session not finished yet')
+        throw new Error('NOT_DONE_VALID')
 
       let mail = result.disclosed[0][0].rawvalue
-      if (!conf.admins.includes(mail)) throw new Error('not an admin')
+      if (!conf.admins.includes(mail)) throw new Error('NOT_AN_ADMIN')
 
       req.session.admin_auth = true
       res.status(200).json({ msg: 'success' })
     })
-    .catch((err) => res.status(403).json({ err: err }))
+    .catch((err) => res.status(200).json({ msg: 'fail', err: err.message }))
 })
 
 router.get('/logout', (req, res) => res.clearCookie('session'))
